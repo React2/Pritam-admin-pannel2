@@ -165,7 +165,7 @@ const Banner = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          setVideo(data.url);
+          // setVideo(data.url);
           console.log(data.url);
         })
         .catch((err) => {
@@ -220,7 +220,7 @@ const Banner = () => {
               <Form.Label>Video</Form.Label>
               <Form.Control
                 type="file"
-                onChange={(e) => uploadVideo(e.target.files[0])}
+                onChange={(e) => setVideo(e.target.files[0])}
               />
             </Form.Group>
 

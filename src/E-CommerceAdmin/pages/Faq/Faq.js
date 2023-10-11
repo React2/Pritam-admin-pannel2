@@ -22,6 +22,7 @@ const Faq = () => {
   const [edit, setEdit] = useState(false);
   const [total, setTotal] = useState(0);
   const [editData, setEditData] = useState({});
+  const [defaultType, setdefaultType] = useState("Home");
 
   const token = localStorage.getItem("AdminToken");
 
@@ -35,7 +36,9 @@ const Faq = () => {
 
   const fetchData = async () => {
     try {
-      const { data } = await axios.get(`${Baseurl}api/v1/static/faq/All`);
+      const { data } = await axios.get(
+        `${Baseurl}api/v1/static/faq/All/${defaultType}`
+      );
       setData(data.data);
       setTotal(data.data.length);
     } catch (e) {
@@ -45,7 +48,7 @@ const Faq = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [defaultType]);
 
   const deleteHandler = async (id) => {
     try {
@@ -77,12 +80,14 @@ const Faq = () => {
     const [question, setQuestion] = useState(editData?.question);
     const [answer, setAnswer] = useState(editData?.answer);
     const [submitLoading, setSubmitLoading] = useState(false);
-
-    const payload = { question, answer };
+    const [type, setType] = useState("");
+    const payload = { question, answer,type };
 
     const postHandler = async (e) => {
       e.preventDefault();
       setSubmitLoading(true);
+      console.log("home posthandler",)
+    
       try {
         const { data } = await axios.post(
           `${Baseurl}api/v1/static/faq/createFaq`,
@@ -116,7 +121,7 @@ const Faq = () => {
       e.preventDefault();
       setSubmitLoading(true);
       try {
-        const { dat } = await axios.put(
+        const {data} = await axios.put(
           `${Baseurl}api/v1/static/faq/${id}`,
           payload,
           Auth
@@ -152,7 +157,7 @@ const Faq = () => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            {" "}
+
             {edit ? "Edit " : "Create New"}
           </Modal.Title>
         </Modal.Header>
@@ -170,7 +175,15 @@ const Faq = () => {
                 />
               </FloatingLabel>
             </Form.Group>
-
+            <Form.Group>
+              <Form.Label>Type</Form.Label>
+              <Form.Select onChange={(e) => setType(e.target.value)}>
+                {/* ["Product", "Delivery", "Farm", "App"] */}
+                <option>{type}</option>
+                <option value="Home">Home</option>
+                <option value="EventHome">Event-Home</option>
+              </Form.Select>
+            </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Answer</Form.Label>
 
@@ -292,6 +305,11 @@ const Faq = () => {
           <Alert>No FAQ Found !</Alert>
         ) : (
           <>
+            <select onChange={(e) => setdefaultType(e.target.value)} className="SelectTypeOfFaq">
+              <option>Select Type</option>
+              <option value="Home">Home</option>
+              <option value="EventHome">EventHome</option>
+            </select>
             <div className="overFlowCont">
               <Table>
                 <thead>

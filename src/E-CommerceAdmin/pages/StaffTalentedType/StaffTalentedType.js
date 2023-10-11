@@ -76,206 +76,360 @@ const StaffTalentedType = () => {
     }
   };
 
-  function MyVerticallyCenteredModal(props) {
-    const [submitLoading, setSubmitLoading] = useState(false);
-    const [imageLoading, setImageLoading] = useState(false);
-    const [uploaded, setUploaded] = useState(false);
-    const [title, setTitle] = useState(editData?.title);
-    const [mainImage, setMainImage] = useState("");
-    const [desc, setDesc] = useState(editData?.desc);
+   function MyVerticallyCenteredModal(props) {
+     const [submitLoading, setSubmitLoading] = useState(false);
+     const [imageLoading, setImageLoading] = useState(false);
+     const [uploaded, setUploaded] = useState(false);
+     const [title, setTitle] = useState(editData?.title);
+     const [mainImage, setMainImage] = useState("");
+     const [desc, setDesc] = useState(editData?.desc);
+     const [youtubeLink, setyoutubelink] = useState(editData.youtubeLink);
+     const [contactUsformTitle, setcontactUsformTitle] = useState(
+       editData.contactUsformTitle
+     );
+     const [contactUsformDesc, setcontactUsformDesc] = useState(
+       editData.contactUsformDesc
+     );
+     const [contactUsformAvailibility, setcontactUsformAvailibility] = useState(
+       editData.contactUsformAvailibility
+     );
+     const [contactUsformPrivacy, setcontactUsformPrivacy] = useState(
+       editData.contactUsformPrivacy
+     );
+     const [eTitle, seteTitle] = useState(editData.eTitle);
+     const [eDesc, seteDesc] = useState(editData.eDesc);
+     const [eformWhatApp, seteformWhatApp] = useState(editData.eformWhatApp);
+     const [eformCall, seteformCall] = useState(editData.eformCall);
+     const [eformPrivacy, seteformPrivacy] = useState(editData.eformPrivacy);
+     const [eformImage, setFormImage] = useState("");
+const [descriptionTitleFirst, setDescriptionTitleFirst] = useState("");
+const [descriptionTitleSecond, setDescriptionTitleSecond] = useState("");
+const [descriptionTitlethird, setDescriptionTitlethird] = useState("");
+const [descriptionDescFirst, setDescriptionDescFirst] = useState("");
+const [descriptionDescSecond, setDescriptionDescSecond] = useState("");
+const [descriptionDescthird, setDescriptionDescthird] = useState("");
 
-    const payload = {
-      title,
-      mainImage,
-      desc,
-      image: mainImage,
-    };
+     const payload = {
+       title,
+       desc,
+       image: mainImage,
+       contactUsformTitle,
+       contactUsformDesc,
+       contactUsformAvailibility,
+       contactUsformPrivacy,
+       youtubeLink,
+       eTitle,
+       eDesc,
+       eformWhatApp,
+       eformCall,
+       eformPrivacy,
+       eformImage,
+       "descriptionTitle[0]": descriptionTitleFirst,
+       "descriptionDesc[0]":descriptionDescFirst,
+       "descriptionTitle[1]": descriptionTitleFirst,
+       "descriptionDesc[1]": descriptionDescSecond,
+       "descriptionTitle[2]":descriptionTitlethird,
+       "descriptionDesc[2]": descriptionDescthird,
+       
+     };
 
-    const ClodinaryPost = (value) => {
-      setImageLoading(true);
-      const data = new FormData();
-      data.append("file", value);
-      data.append("upload_preset", "ml_default");
-      data.append("cloud_name", "dbcnha741");
-      fetch("https://api.cloudinary.com/v1_1/dbcnha741/image/upload", {
-        method: "post",
-        body: data,
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setMainImage(data.url);
-          setUploaded(true);
-          setImageLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    };
+     const ClodinaryPost = (value, type) => {
+       setImageLoading(true);
+       const data = new FormData();
+       data.append("file", value);
+       data.append("upload_preset", "ml_default");
+       data.append("cloud_name", "dbcnha741");
+       fetch("https://api.cloudinary.com/v1_1/dbcnha741/image/upload", {
+         method: "post",
+         body: data,
+       })
+         .then((res) => res.json())
+         .then((data) => {
+           if (type == "mainImage") {
+             setMainImage(data.url);
+             console.log("imageUrl", data.url);
+             setUploaded(true);
+             setImageLoading(false);
+           } else if (type == "eformImage") {
+             setFormImage(data.url);
+             console.log("imageUrl", data.url);
+           }
+         })
+         .catch((err) => {
+           console.log(err);
+         });
+     };
 
-    const postHandler = async (e) => {
-      e.preventDefault();
-      setSubmitLoading(true);
-      try {
-        const data = await axios.post(
-          `${Baseurl}api/v1/admin/addstaffTalentedType`,
-          payload,
-          Auth
-        );
-        const msg = data.data.message;
-        Store.addNotification({
-          title: "",
-          message: msg,
-          type: "success",
-          insert: "bottom",
-          container: "bottom-right",
-          animationIn: ["animate__animated", "animate__fadeIn"],
-          animationOut: ["animate__animated", "animate__fadeOut"],
-          dismiss: {
-            duration: 2000,
-            onScreen: true,
-          },
-        });
-        fetchData();
-        props.onHide();
-        setSubmitLoading(false);
-      } catch (e) {
-        const msg = e.response.data.message;
-        Store.addNotification({
-          title: "",
-          message: msg,
-          type: "danger",
-          insert: "bottom",
-          container: "bottom-right",
-          animationIn: ["animate__animated", "animate__fadeIn"],
-          animationOut: ["animate__animated", "animate__fadeOut"],
-          dismiss: {
-            duration: 2000,
-            onScreen: true,
-          },
-        });
-        setSubmitLoading(false);
-      }
-    };
+     const postHandler = async (e) => {
+       e.preventDefault();
+       setSubmitLoading(true);
+       console.log("payload", payload);
+       try {
+         const formdataforPost = new FormData();
+         for (let key in payload) {
+           formdataforPost.append(key, payload[key]);
+         }
 
-    // const putHandler = async (e) => {
-    //   e.preventDefault();
-    //   setSubmitLoading(true);
-    //   try {
-    //     const data = await axios.put(
-    //       `${Baseurl}api/v1/admin/updateTrendingService/${id}`,
-    //       payload,
-    //       Auth
-    //     );
-    //     const msg = data.data.message;
-    //     Store.addNotification({
-    //       title: "",
-    //       message: msg,
-    //       type: "success",
-    //       insert: "bottom",
-    //       container: "bottom-right",
-    //       animationIn: ["animate__animated", "animate__fadeIn"],
-    //       animationOut: ["animate__animated", "animate__fadeOut"],
-    //       dismiss: {
-    //         duration: 2000,
-    //         onScreen: true,
-    //       },
-    //     });
-    //     fetchData();
-    //     props.onHide();
-    //     setSubmitLoading(false);
-    //   } catch (e) {
-    //     const msg = e.response.data.message;
-    //     Store.addNotification({
-    //       title: "",
-    //       message: msg,
-    //       type: "danger",
-    //       insert: "bottom",
-    //       container: "bottom-right",
-    //       animationIn: ["animate__animated", "animate__fadeIn"],
-    //       animationOut: ["animate__animated", "animate__fadeOut"],
-    //       dismiss: {
-    //         duration: 2000,
-    //         onScreen: true,
-    //       },
-    //     });
-    //     setSubmitLoading(false);
-    //   }
-    // };
+         const data = await axios.post(
+           `${Baseurl}api/v1/admin/addStaffTalentedType`,
+           formdataforPost,
+           Auth
+         );
+         const msg = data.data.message;
+         console.log("checkmessages", msg);
+         Store.addNotification({
+           title: "",
+           message: msg,
+           type: "success",
+           insert: "bottom",
+           container: "bottom-right",
+           animationIn: ["animate__animated", "animate__fadeIn"],
+           animationOut: ["animate__animated", "animate__fadeOut"],
+           dismiss: {
+             duration: 2000,
+             onScreen: true,
+           },
+         });
+         fetchData();
+         props.onHide();
+         setSubmitLoading(false);
+       } catch (e) {
+         const msg = e.response.data.message;
+         console.log("checkErrorMsg", msg);
+         Store.addNotification({
+           title: "",
+           message: msg,
+           type: "danger",
+           insert: "bottom",
+           container: "bottom-right",
+           animationIn: ["animate__animated", "animate__fadeIn"],
+           animationOut: ["animate__animated", "animate__fadeOut"],
+           dismiss: {
+             duration: 2000,
+             onScreen: true,
+           },
+         });
+         setSubmitLoading(false);
+       }
+     };
 
-    return (
-      <Modal
-        {...props}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            {edit ? "Edit" : "Create New"}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={postHandler}>
-            {imageLoading === true ? (
-              <Spinner animation="border" role="status" />
-            ) : (
-              ""
-            )}
-            {uploaded === true ? (
-              <Alert variant="success">Image Uploaded Successfully</Alert>
-            ) : (
-              ""
-            )}
-            <div className="multiple_Image">
-              <img src={editData?.image} alt="" />
-            </div>
+     return (
+       <Modal
+         {...props}
+         aria-labelledby="contained-modal-title-vcenter"
+         centered
+       >
+         <Modal.Header closeButton>
+           <Modal.Title id="contained-modal-title-vcenter">
+             {edit ? "Edit" : "Create New"}
+           </Modal.Title>
+         </Modal.Header>
+         <Modal.Body>
+           <Form onSubmit={postHandler}>
+             {imageLoading === true ? (
+               <Spinner animation="border" role="status" />
+             ) : (
+               ""
+             )}
+             {uploaded === true ? (
+               <Alert variant="success">Image Uploaded Successfully</Alert>
+             ) : (
+               ""
+             )}
+             <div className="multiple_Image">
+               <img src={editData?.image} alt="" />
+             </div>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Image</Form.Label>
-              <Form.Control
-                type="file"
-                onChange={(e) => ClodinaryPost(e.target.files[0])}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Title</Form.Label>
-              <Form.Control
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Description</Form.Label>
-              <FloatingLabel>
-                <Form.Control
-                  as="textarea"
-                  style={{ height: "100px" }}
-                  value={desc}
-                  onChange={(e) => setDesc(e.target.value)}
-                />
-              </FloatingLabel>
-            </Form.Group>
-
-            <Button
-              style={{
-                backgroundColor: "#0c0c0c",
-                borderRadius: "0",
-                border: "1px solid #0c0c0c",
-              }}
-              type="submit"
-            >
-              {submitLoading ? (
-                <Spinner animation="border" role="status" />
-              ) : (
-                "Submit"
-              )}
-            </Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
-    );
-  }
+             <Form.Group className="mb-3">
+               <Form.Label>Image</Form.Label>
+               <Form.Control
+                 type="file"
+                 onChange={(e) => ClodinaryPost(e.target.files[0], "mainImage")}
+               />
+             </Form.Group>
+             <Form.Group className="mb-3">
+               <Form.Label>Title</Form.Label>
+               <Form.Control
+                 type="text"
+                 value={title}
+                 onChange={(e) => setTitle(e.target.value)}
+               />
+             </Form.Group>
+             <Form.Group className="mb-3">
+               <Form.Label>Description</Form.Label>
+               <FloatingLabel>
+                 <Form.Control
+                   as="textarea"
+                   style={{ height: "100px" }}
+                   value={desc}
+                   onChange={(e) => setDesc(e.target.value)}
+                 />
+               </FloatingLabel>
+             </Form.Group>
+             <Form.Group className="mb-3">
+               <Form.Label>YouTube Link</Form.Label>
+               <Form.Control
+                 type="text"
+                 onChange={(e) => setyoutubelink(e.target.value)}
+               />
+             </Form.Group>
+             <Form.Group className="mb-3">
+               <Form.Label>Contact Us From Tittle</Form.Label>
+               <Form.Control
+                 type="text"
+                 onChange={(e) => setcontactUsformTitle(e.target.value)}
+               />
+             </Form.Group>
+             <Form.Group className="mb-3">
+               <Form.Label>Contact Us From Description </Form.Label>
+               <Form.Control
+                 type="text"
+                 onChange={(e) => setcontactUsformDesc(e.target.value)}
+               />
+             </Form.Group>
+             <Form.Group className="mb-3">
+               <Form.Label>Contact Us From Availability</Form.Label>
+               <Form.Control
+                 type="text"
+                 onChange={(e) => setcontactUsformAvailibility(e.target.value)}
+               />
+             </Form.Group>
+             <Form.Group className="mb-3">
+               <Form.Label>Contact Us From Policy</Form.Label>
+               <Form.Control
+                 type="text"
+                 onChange={(e) => setcontactUsformPrivacy(e.target.value)}
+               />
+             </Form.Group>
+             <Form.Group className="mb-3">
+               <Form.Label>E-tittle</Form.Label>
+               <Form.Control
+                 type="text"
+                 onChange={(e) => seteTitle(e.target.value)}
+               />
+             </Form.Group>
+             <Form.Group className="mb-3">
+               <Form.Label>E-desc</Form.Label>
+               <Form.Control
+                 type="text"
+                 onChange={(e) => seteDesc(e.target.value)}
+               />
+             </Form.Group>
+             <Form.Group className="mb-3">
+               <Form.Label>WhatsApp Number</Form.Label>
+               <Form.Control
+                 type="text"
+                 onChange={(e) => seteformWhatApp(e.target.value)}
+               />
+             </Form.Group>
+             <Form.Group className="mb-3">
+               <Form.Label>Call Number</Form.Label>
+               <Form.Control
+                 type="text"
+                 onChange={(e) => seteformCall(e.target.value)}
+               />
+             </Form.Group>
+             <Form.Group className="mb-3">
+               <Form.Label>Form Privacy</Form.Label>
+               <Form.Control
+                 type="text"
+                 onChange={(e) => seteformPrivacy(e.target.value)}
+               />
+             </Form.Group>
+             <Form.Group className="mb-3">
+               <Form.Label>e-form Image</Form.Label>
+               <Form.Control
+                 type="file"
+                 onChange={(e) =>
+                   ClodinaryPost(e.target.files[0], "eformImage")
+                 }
+               />
+             </Form.Group>
+             <Form.Group className="mb-3">
+               <Form.Label>Description Title First</Form.Label>
+               <FloatingLabel>
+                 <Form.Control
+                   as="textarea"
+                   style={{ height: "100px" }}
+                   value={descriptionTitleFirst}
+                   onChange={(e) => setDescriptionTitleFirst(e.target.value)}
+                 />
+               </FloatingLabel>
+             </Form.Group>
+             <Form.Group className="mb-3">
+               <Form.Label>Description Title Second</Form.Label>
+               <FloatingLabel>
+                 <Form.Control
+                   as="textarea"
+                   style={{ height: "100px" }}
+                   value={descriptionTitleSecond}
+                   onChange={(e) => setDescriptionTitleSecond(e.target.value)}
+                 />
+               </FloatingLabel>
+             </Form.Group>
+             <Form.Group className="mb-3">
+               <Form.Label>Description Title Third</Form.Label>
+               <FloatingLabel>
+                 <Form.Control
+                   as="textarea"
+                   style={{ height: "100px" }}
+                   value={descriptionTitlethird}
+                   onChange={(e) => setDescriptionTitlethird(e.target.value)}
+                 />
+               </FloatingLabel>
+             </Form.Group>
+             <Form.Group className="mb-3">
+               <Form.Label>Description Description First</Form.Label>
+               <FloatingLabel>
+                 <Form.Control
+                   as="textarea"
+                   style={{ height: "100px" }}
+                   value={descriptionDescFirst}
+                   onChange={(e) => setDescriptionDescFirst(e.target.value)}
+                 />
+               </FloatingLabel>
+             </Form.Group>
+             <Form.Group className="mb-3">
+               <Form.Label>Description Description Second</Form.Label>
+               <FloatingLabel>
+                 <Form.Control
+                   as="textarea"
+                   style={{ height: "100px" }}
+                   value={descriptionDescSecond}
+                   onChange={(e) => setDescriptionDescSecond(e.target.value)}
+                 />
+               </FloatingLabel>
+             </Form.Group>
+             <Form.Group className="mb-3">
+               <Form.Label>Description Description Third</Form.Label>
+               <FloatingLabel>
+                 <Form.Control
+                   as="textarea"
+                   style={{ height: "100px" }}
+                   value={descriptionDescthird}
+                   onChange={(e) => setDescriptionDescthird(e.target.value)}
+                 />
+               </FloatingLabel>
+             </Form.Group>
+             <Button
+               style={{
+                 backgroundColor: "#0c0c0c",
+                 borderRadius: "0",
+                 border: "1px solid #0c0c0c",
+               }}
+               type="submit"
+             >
+               {submitLoading ? (
+                 <Spinner animation="border" role="status" />
+               ) : (
+                 "Submit"
+               )}
+             </Button>
+           </Form>
+         </Modal.Body>
+       </Modal>
+     );
+   }
 
   function MyDescriptionModal(props) {
     return (

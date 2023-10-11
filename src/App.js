@@ -32,6 +32,7 @@ import CreateYourDreamsQuickly from "./E-CommerceAdmin/pages/CreateYourDreamsQui
 import StaffTalentedType from "./E-CommerceAdmin/pages/StaffTalentedType/StaffTalentedType";
 import StaffTalented from "./E-CommerceAdmin/pages/StaffTalented/StaffTalented";
 // add new routes
+import PageDescription from "./E-CommerceAdmin/pages/PageDescription/PageDescription";
 
 function App() {
   return (
@@ -70,6 +71,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/banner" element={<Banner />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/page-description" element={<PageDescription />} />
         <Route path="/socialLinks" element={<SocialLinks />} />
         <Route path="/office" element={<Office />} />
         <Route path="/dream-job" element={<DreamJob />} />

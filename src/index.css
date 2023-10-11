@@ -32,7 +32,12 @@ html {
   box-shadow: none;
   transform: scale(1);
 }
-
+.SelectTypeOfFaq{
+  margin-bottom: 80px;
+  padding: 5px 10px;
+  background-color: black;
+  color: white;
+}
 .dashboard-comp{
   display: flex;
   gap: 20px;

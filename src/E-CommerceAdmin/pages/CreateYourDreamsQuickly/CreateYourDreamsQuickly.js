@@ -9,6 +9,7 @@ import {
   Alert,
   FloatingLabel,
   Spinner,
+  Table,
 } from "react-bootstrap";
 import axios from "axios";
 import { Store } from "react-notifications-component";
@@ -294,28 +295,69 @@ const CreateYourDreamsQuickly = () => {
         ) : (
           <>
             <div className="mt-4">
-              <h1>{data.title}</h1>
-              <h3>Description</h3>
-              {data.desc.map((i, index) => (
-                <p>{i}</p>
-              ))}
-              <p>
-                <img
-                  src={data.image}
-                  style={{ height: "300px", width: "300px" }}
-                ></img>
-              </p>
+              <div className="multiple_Image">
+                {data?.image && (
+                  <img
+                    src={data?.image}
+                    style={{
+                      width: "300px",
+                      maxWidth: "300px",
+                      height: "300px",
+                      maxHeight: "400px",
+                    }}
+                    alt=""
+                  />
+                )}
+              </div>
+              <div className="InfoBox mt-2">
+                <p className="title">Title</p>
+                <p className="desc"> {data?.title} </p>
+              </div>
 
-              <div>
-                <div className="d-flex m-10">
-                  <h2>Created Date</h2>
-                  <h2 className="ml-4">{data.createdAt.substr(0, 10)}</h2>
-                </div>
+              <div className="InfoBox mt-2">
+                <p className="title">Heading</p>
+                <p className="desc">
+                  {" "}
+                  {data.desc.map((i, index) => (
+                    <p>{i}</p>
+                  ))}{" "}
+                </p>
+              </div>
 
-                <div className="d-flex m-10">
-                  <h2>Updated Date </h2>
-                  <h2 className="ml-16">{data.updatedAt.substr(0, 10)}</h2>
-                </div>
+              <div className="overFlowCont mt-5">
+                <Table>
+                  <thead>
+                    <tr>
+                      <th>Image</th>
+                      <th>Create/Update</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <img
+                          src={data.image}
+                          alt=""
+                          style={{
+                            width: "100px",
+                            height: "80px",
+                            maxHeight: "100px",
+                          }}
+                        />
+                      </td>
+                      <div className="d-block">
+                        <td>{data.createdAt.substr(0, 10)} </td>
+                        <br />
+                        <td>{data.updatedAt.substr(0, 10)}</td>
+                      </div>
+
+                      <td>
+                        <i className="fa-solid fa-trash" />
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
               </div>
             </div>
           </>
