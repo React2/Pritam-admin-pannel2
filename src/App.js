@@ -33,7 +33,7 @@ import StaffTalentedType from "./E-CommerceAdmin/pages/StaffTalentedType/StaffTa
 import StaffTalented from "./E-CommerceAdmin/pages/StaffTalented/StaffTalented";
 // add new routes
 import PageDescription from "./E-CommerceAdmin/pages/PageDescription/PageDescription";
-
+import Bartending from "./E-CommerceAdmin/pages/Bartending/Bartending";
 function App() {
   return (
     <>
@@ -55,6 +55,7 @@ function App() {
         <Route path="/privacy-policy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/faq" element={<Faq />} />
+        <Route path="/Barthending" element={<Bartending />} />
         <Route path="/courses" element={<Courses />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/getWhoWeAre" element={<WhoWeAre />} />
@@ -76,6 +77,7 @@ function App() {
         <Route path="/office" element={<Office />} />
         <Route path="/dream-job" element={<DreamJob />} />
         <Route path="/getBuisness" element={<GetBuisness />} />
+
         {/* //add routes */}
         <Route
           path="/createyourdreamsquickly"

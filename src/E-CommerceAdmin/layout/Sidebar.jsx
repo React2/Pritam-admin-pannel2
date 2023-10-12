@@ -27,6 +27,13 @@ const Sidebar = ({ hamb, setHamb }) => {
       icon: (
         <i className="fa-solid fa-address-card text-xl mr-3 rounded-full" />
       ),
+      link: "/Barthending",
+      name: "Barthending",
+    },
+    {
+      icon: (
+        <i className="fa-solid fa-address-card text-xl mr-3 rounded-full" />
+      ),
       link: "/privacy-policy",
       name: "Privacy Poilcy",
     },

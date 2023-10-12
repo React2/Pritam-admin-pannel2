@@ -23,7 +23,7 @@ const StaffTalented = () => {
   const [id, setId] = useState(null);
   const [edit, setEdit] = useState(false);
   const [editData, setEditData] = useState({});
-
+  const [viewDescription,setViewDescription]=useState("")
   const token = localStorage.getItem("AdminToken");
 
   const Auth = {
@@ -42,11 +42,32 @@ const StaffTalented = () => {
       setData(data.data);
       console.log(data.data);
       setTotal(data.data.length);
+      const youtubeVideoLink = data.data.youtubeLink;
+      console.log("youtubeLink", youtubeVideoLink);
+         const videoId = getVideoIdFromUrl(youtubeVideoLink);
+         if (videoId) {
+           console.log("Video ID:", videoId);
+           const videourl = `https://www.youtube.com/embed/${videoId}?si=InTXwsXs3JbTwAMf&amp;start=3`;
+           setData((prev) => {
+             return { ...prev, updateyoutubelink: videourl };
+           });
+         } else {
+           console.log("Invalid YouTube URL");
+         }
     } catch (e) {
       console.log(e);
     }
   };
+  function getVideoIdFromUrl(url) {
+    const regExp = /v=([a-zA-Z0-9_-]+)/;
+    const match = url.match(regExp);
 
+    if (match && match[1]) {
+      return match[1];
+    }
+
+    return null;
+  }
   useEffect(() => {
     fetchData();
   }, []);
@@ -540,7 +561,7 @@ const StaffTalented = () => {
         <Modal.Body>
           <div className="InfoBox">
             <p className="title mb-1">Description </p>
-            <p className="desc"> {desc} </p>
+            <p className="desc"> {viewDescription} </p>
           </div>
         </Modal.Body>
       </Modal>
@@ -584,9 +605,7 @@ const StaffTalented = () => {
         {data?.length === 0 || !data ? (
           <Alert>Not Create Yet !</Alert>
         ) : (
-            <>
-            
-
+          <>
             <div className="mt-4">
               <div className="multiple_Image">
                 {data?.image && (
@@ -604,15 +623,47 @@ const StaffTalented = () => {
               </div>
               <h1>{data.title}</h1>
               <p>{data.desc}</p>
-              <h2>AcademyHeading</h2>
-              <p>{data.academyHeading}</p>
+              <h2>{data.academyHeading}</h2>
               <p>{data.academyDesc}</p>
-              <h2>From Title</h2>
-              <p>{data.formTitle}</p>
-              <h2>Form Description</h2>
+              <h2>{data.formTitle}</h2>
               <p>{data.formDesc}</p>
               <h2>Form Privacy</h2>
               <p>{data.formPrivacy}</p>
+              <h1 style={{ margin: "20px auto", width: "50%" }}>
+                Consultancy Section
+              </h1>
+              <div className="d-flex m-10 ConsultancyStyle">
+                {data?.consultancy.map((item) => (
+                  <div className="m-10">
+                    <h4>{item.title}</h4>
+                    <button
+                      onClick={(e) => {
+                        setDescModal(true);
+                        setViewDescription(item.desc);
+                      }}
+                      className="md:py-2 px-3 md:px-4 py-1 rounded-sm bg-[#0c0c0c] text-white tracking-wider"
+                    >
+                      VIEW Description
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <div className="d-flex">
+                {data?.image?.map((item) => (
+                  <img src={item} alt="item" />
+                ))}
+              </div>
+              <div style={{ width: "100%", margin: "40px auto" }}>
+                <iframe
+                  width="80%"
+                  height="400"
+                  src={data?.updateyoutubelink}
+                  title="YouTube video player"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                ></iframe>
+              </div>
               <div>
                 <div className="d-flex m-10">
                   <h4>WhatApp Contact Number</h4>

@@ -9,46 +9,60 @@ const PageDescription = () => {
 const [total, setTotal] = useState(0);
   const [modalShow, setModalShow] = useState(false);
   const [pageDescription, setPageDescription] = useState([]);
+  const [Particulardesc,setParticulardesc]=useState("")
+  const [descModal,setDescModal]=useState(false);
+  const [edit, setEdit] = useState(false);
+  const [editPageId,setEditPageId]=useState("")
+ 
   const Baseurl = "https://pritam-backend.vercel.app/";
-  const getAllSupports = async () => {
+  const getAllPageDescription = async () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${Baseurl}api/v1/admin/page/addPageTitledescription`
+        `${Baseurl}api/v1/admin/page/getPageTitledescription`
       );
       const data = response.data;
       setLoading(false);
       console.log("data", data);
-      setTotal(data.length);
-      setPageDescription(data);
+      setTotal(data.data.length);
+      setPageDescription(data.data);
     } catch (error) {
       setLoading(false);
       console.log(error);
     }
   };
   useEffect(() => {
-    getAllSupports();
+    getAllPageDescription();
   }, []);
-  // "question":"this is question",
-  // "answer":"this is answer",
+  // "title":"this is question",
+  // "desc":"this is answer",
   // "type":"Product"
-  function MyVerticallyCenteredModal(props) {
-    const [question, setquestion] = useState("");
-    const [answer, setanswer] = useState("");
-    const [type, setType] = useState("");
-    const payload = {
-      question,
-      answer,
-      type,
-    };
 
+
+  function MyVerticallyCenteredModal(props) {
+    const [title, settitle] = useState("");
+    const [desc, setdesc] = useState("");
+    const [page, setPage] = useState("");
+    const payload = {
+      title,
+      desc,
+      page,
+    };
+    const token = localStorage.getItem("AdminToken");
+
+  const Auth = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
     const postHandler = async (e) => {
       e.preventDefault();
       try {
         console.log(payload);
         const data = await axios.post(
-          `${Baseurl}/admin/page/addPageTitledescription`,
-          payload
+          `${Baseurl}api/v1/admin/page/addPageTitledescription`,
+          payload,
+          Auth
         );
         Store.addNotification({
           title: "",
@@ -65,10 +79,37 @@ const [total, setTotal] = useState(0);
         });
 
         //  props.onHide();
-        getAllSupports();
+        getAllPageDescription();
       } catch {}
     };
-    console.log("query", pageDescription);
+    const  EditPageHandler=async(e)=>{
+      e.preventDefault()
+      try {
+        console.log("editpageFuncti")
+        const response=await axios.put(`${Baseurl}api/v1/admin/page/editPageTitledescription/${editPageId}`,
+        payload
+        );
+        Store.addNotification({
+          title: "",
+          message: "Edited Successfully",
+          type: "success",
+          insert: "top",
+          container: "top-center",
+          animationIn: ["animate__animated", "animate__fadeIn"],
+          animationOut: ["animate__animated", "animate__fadeOut"],
+          dismiss: {
+            duration: 2000,
+            onScreen: true,
+          },
+        });
+        getAllPageDescription()
+      } catch (error) {
+        
+      }
+    }
+
+
+    console.log("editpage",edit);
     return (
       <Modal
         {...props}
@@ -77,36 +118,34 @@ const [total, setTotal] = useState(0);
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Create New
+          {edit ? "Edit " : "Create New"}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={postHandler}>
+          <Form onSubmit={edit ? EditPageHandler : postHandler}>
             <Form.Group className="mb-3">
               <Form.Label>Type</Form.Label>
-              <Form.Select onChange={(e) => setType(e.target.value)}>
+              <Form.Select onChange={(e) => setPage(e.target.value)}>
                 {/* ["Product", "Delivery", "Farm", "App"] */}
-                <option>{type}</option>
-                <option value="Product">Product</option>
-                <option value="Delivery">Delivery</option>
-                <option value="Farm">Farm</option>
-                <option value="App">App</option>
+                <option>{page}</option>
+                <option value="FIND WORK">FIND WORK</option>
+                <option value="FIND TALENT">FIND TALENT</option>
+                <option value="FREELANCING">FREELANCING</option>
+                <option value="SCHOOL FOR BARTENDING">SCHOOL FOR BARTENDING</option>
               </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Page</Form.Label>
+              <Form.Label>Title</Form.Label>
               <Form.Control
                 as="textarea"
-                required
-                onChange={(e) => setquestion(e.target.value)}
+                onChange={(e) => settitle(e.target.value)}
               />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Description</Form.Label>
               <Form.Control
-                required
                 as="textarea"
-                onChange={(e) => setanswer(e.target.value)}
+                onChange={(e) => setdesc(e.target.value)}
               />
             </Form.Group>
 
@@ -128,7 +167,7 @@ const [total, setTotal] = useState(0);
 
   const deleteHandler = async (id) => {
     try {
-      const response = await axios.delete(`${Baseurl}api/v1/faqs/${id}`);
+      const response = await axios.delete(`${Baseurl}api/v1/admin/page/DeletePageTitledescription/${id}`);
       Store.addNotification({
         title: "",
         message: "deleted Successfully",
@@ -142,9 +181,33 @@ const [total, setTotal] = useState(0);
           onScreen: true,
         },
       });
-      getAllSupports();
+      getAllPageDescription();
     } catch (error) {}
   };
+
+
+  function  MyDescriptionModal(props){
+    return (
+      <Modal
+        {...props}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        size="lg"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            View Description
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="InfoBox">
+            <p className="desc"> {Particulardesc} </p>
+          </div>
+        </Modal.Body>
+      </Modal>
+    );
+  }
+
 
   return (
     <>
@@ -152,6 +215,7 @@ const [total, setTotal] = useState(0);
         show={modalShow}
         onHide={() => setModalShow(false)}
       />
+      <MyDescriptionModal show={descModal} onHide={() => setDescModal(false)} />
       <section>
         <section className="sectionCont">
           <div className="pb-4   w-full flex justify-between items-center">
@@ -159,7 +223,7 @@ const [total, setTotal] = useState(0);
               className="tracking-widest text-slate-900 font-semibold uppercase"
               style={{ fontSize: "1.2rem" }}
             >
-              All Queries ( Total : {total} )
+              All Pages Desccription ( Total : {total} )
             </span>
             <button
               onClick={() => {
@@ -174,7 +238,7 @@ const [total, setTotal] = useState(0);
           {loading ? (
             <Spinner animation="border" role="status" className="loadingSpin" />
           ) : pageDescription?.length === 0 || !pageDescription ? (
-            <Alert>Help Not Found</Alert>
+            <Alert>Pages Description Not Found</Alert>
           ) : (
             <div className="overFlowCont">
               <Table>
@@ -184,8 +248,8 @@ const [total, setTotal] = useState(0);
                     <th>Page Title</th>
                     <th>Page Name</th>
                     <th>Page Description</th>
-                    <th></th>
-                    <th></th>
+                    <th>Delete</th>
+                    <th>Edit</th>
                   </tr>
                 </thead>
 
@@ -193,10 +257,17 @@ const [total, setTotal] = useState(0);
                   {pageDescription?.map((item, index) => (
                     <tr key={index}>
                       <td>#{index + 1} </td>
-                      <td>{item.question}</td>
-                      <td>{item.answer}</td>
-                      <td>{item.type}</td>
-                      <td>{item.isActive ? "active" : "Resolve"}</td>
+                      <td>{item.page}</td>
+                      <td>{item.title}</td>
+                      <td>  <button
+                          className="md:py-2 px-3 md:px-4 py-1 rounded-sm bg-[#0c0c0c] text-white tracking-wider"
+                          onClick={() => {
+                            setParticulardesc(item.desc);
+                            setDescModal(true);
+                          }}
+                        >
+                          View
+                        </button></td>
                       <td>
                         <span className="flexCont">
                           <i
@@ -208,8 +279,13 @@ const [total, setTotal] = useState(0);
                       <td>
                         <span className="flexCont">
                           <i
-                            className="fa-solid fa-trash"
-                            onClick={() => deleteHandler(item._id)}
+                            className="fa-solid fa-pen-to-square"
+                            onClick={() => {
+                            setEditPageId(item._id);
+                             setEdit(true)
+                             setModalShow(true)
+                            }
+                            }
                           />
                         </span>
                       </td>

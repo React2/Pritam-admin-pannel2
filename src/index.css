@@ -19,6 +19,18 @@ html {
   font-family: Quicksand !important;
 }
 
+.AddUserCss{
+  margin-top: 20px;
+}
+
+
+.ConsultancyStyle{
+margin-top: -10px;
+}
+.ConsultancyStyle>h4{
+padding-bottom: 20px;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
 }

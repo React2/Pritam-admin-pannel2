@@ -38,7 +38,7 @@ const DreamJob = () => {
   function MyVerticallyCenteredModal(props) {
     const [submitLoading, setSubmitLoading] = useState(false);
     const [title, setTitle] = useState(data?.title);
-    const [image, setImage] = useState("");
+    const [image, setImage] = useState([]);
     const [description, setDescription] = useState(data?.heading);
     const [desc, setDesc] = useState(data?.desc ? data?.desc : []);
     const [descName, setDescName] = useState("");
@@ -54,15 +54,24 @@ const DreamJob = () => {
 
     const payload = new FormData();
     payload.append("title", title);
+    console.log("video", image);
     payload.append("image", image);
     payload.append("heading", description);
-    Array.from(desc).forEach((img) => {
-      payload.append("desc", img);
+    Array.from(desc).forEach((img,i) => {
+      payload.append(`desc[${i}]`, img);
     });
+    // const payload = {
+    //   title,
+    //   image,
+    //   heading: description,
+    //   desc
+    // }
+
 
     const postHandler = async (e) => {
       e.preventDefault();
       setSubmitLoading(true);
+      console.log("payload",payload)
       try {
         const data = await axios.post(
           `${Baseurl}api/v1/admin/dream/createYourDreamsQuickly`,
@@ -126,6 +135,7 @@ const DreamJob = () => {
               <Form.Label>Image</Form.Label>
               <Form.Control
                 type="file"
+                accept="video/*"
                 onChange={(e) => setImage(e.target.files[0])}
               />
             </Form.Group>

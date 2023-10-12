@@ -23,7 +23,10 @@ const StaffTalentedType = () => {
   const [id, setId] = useState(null);
   const [edit, setEdit] = useState(false);
   const [editData, setEditData] = useState({});
-
+  const [fullViewData, setfullViewData] = useState({});
+  const [hideFulldata, setShowFullData] = useState(false);
+  const [viewDescription, setViewDescription] = useState("");
+  const [descShowModalForConsultancy,setdescShowModalForConsultancy]=useState(false)
   const token = localStorage.getItem("AdminToken");
 
   const Auth = {
@@ -41,10 +44,21 @@ const StaffTalentedType = () => {
       );
       setData(data.data);
       setTotal(data.data.length);
+     
     } catch (e) {
       console.log(e);
     }
   };
+   function getVideoIdFromUrl(url) {
+     const regExp = /v=([a-zA-Z0-9_-]+)/;
+     const match = url.match(regExp);
+
+     if (match && match[1]) {
+       return match[1];
+     }
+
+     return null;
+   }
 
   useEffect(() => {
     fetchData();
@@ -454,6 +468,110 @@ const [descriptionDescthird, setDescriptionDescthird] = useState("");
     );
   }
 
+  function MyDescriptionModalForConsultancy(props) {
+    return (
+      <Modal
+        {...props}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        size="lg"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            View Description
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="InfoBox">
+            <p className="title mb-1">Description </p>
+            <p className="desc"> {viewDescription} </p>
+          </div>
+        </Modal.Body>
+      </Modal>
+    );
+  }
+  function ShowFullDataModal(props) {
+    console.log("props", fullViewData);
+    return (
+      <>
+        <MyDescriptionModalForConsultancy
+          show={descShowModalForConsultancy}
+          onHide={() => setdescShowModalForConsultancy(false)}
+        />
+        <Modal
+          {...props}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+          size="lg"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title-vcenter">
+              View Full Data
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="InfoBox">
+              <>
+                {fullViewData && (
+                  <div className="mt-4">
+                    <div className="multiple_Image">
+                      {fullViewData?.eformImage && (
+                        <img
+                          src={fullViewData?.eformImage}
+                          style={{
+                            width: "100px",
+                            maxWidth: "100px",
+                            height: "100px",
+                            maxHeight: "100px",
+                          }}
+                          alt=""
+                        />
+                      )}
+                    </div>
+
+                    <h2>contact Us form Privacy</h2>
+                    <p>{fullViewData?.contactUsformPrivacy}</p>
+                    <h2>E Title</h2>
+                    <p>{fullViewData?.eTitle}</p>
+                    <h2>E Description</h2>
+                    <p>{fullViewData?.eDesc}</p>
+                    <h2>E formPrivacy</h2>
+                    <p>{fullViewData?.eformPrivacy}</p>
+
+                    <h1 style={{ margin: "20px auto", width: "50%" }}>
+                      description Section
+                    </h1>
+                    {fullViewData?.description?.map((item) => (
+                      <>
+                        <h3>{item.title}</h3>
+                        <p>{item.desc}</p>
+                      </>
+                    ))}
+                    <div style={{ width: "100%", margin: "40px auto" }}>
+                      <iframe
+                        width="80%"
+                        height="400"
+                        src={fullViewData?.updateyoutubelink}
+                        title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen
+                      ></iframe>
+                    </div>
+                    <div>
+                      
+                    </div>
+              
+                  </div>
+                )}
+              </>
+            </div>
+          </Modal.Body>
+        </Modal>
+      </>
+    );
+  }
+
   return (
     <>
       <MyVerticallyCenteredModal
@@ -461,7 +579,10 @@ const [descriptionDescthird, setDescriptionDescthird] = useState("");
         onHide={() => setModalShow(false)}
       />
       <MyDescriptionModal show={descModal} onHide={() => setDescModal(false)} />
-
+      <ShowFullDataModal
+        show={hideFulldata}
+        onHide={() => setShowFullData(false)}
+      />
       <section className="sectionCont">
         <div className="pb-4  w-full flex justify-between items-center">
           <span
@@ -498,6 +619,7 @@ const [descriptionDescthird, setDescriptionDescthird] = useState("");
                     <th>WhatAppDetail</th>
                     <th>Created At</th>
                     <th></th>
+                    <th>Show Full Content</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -537,6 +659,35 @@ const [descriptionDescthird, setDescriptionDescthird] = useState("");
                               setModalShow(true);
                             }}
                           ></i> */}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="flexCont">
+                          <button
+                            className="md:py-2 px-3 md:px-4 py-1 rounded-sm bg-[#0c0c0c] text-white tracking-wider"
+                            onClick={(e) => {
+                              setfullViewData(i);
+                              setShowFullData(true);
+                                const youtubeVideoLink = i.youtubeLink;
+                                console.log("youtubeLink", youtubeVideoLink);
+                                const videoId =
+                                  getVideoIdFromUrl(youtubeVideoLink);
+                                if (videoId) {
+                                  console.log("Video ID:", videoId);
+                                  const videourl = `https://www.youtube.com/embed/${videoId}?si=InTXwsXs3JbTwAMf&amp;start=3`;
+                                  setfullViewData((prev) => {
+                                    return {
+                                      ...prev,
+                                      updateyoutubelink: videourl,
+                                    };
+                                  });
+                                } else {
+                                  console.log("Invalid YouTube URL");
+                                }
+                            }}
+                          >
+                            Show All
+                          </button>
                         </span>
                       </td>
                     </tr>

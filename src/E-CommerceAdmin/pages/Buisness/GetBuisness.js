@@ -16,6 +16,7 @@ import { Store } from "react-notifications-component";
 const GetBuisness = () => {
   const [modalShow, setModalShow] = useState(false);
   const [data, setData] = useState({});
+  const [UserModal, setUserModal] = useState(false);
 
   const token = localStorage.getItem("AdminToken");
 
@@ -164,6 +165,121 @@ const GetBuisness = () => {
     );
   }
 
+
+  function MyAddUserBuisnessModal(props){
+  const [userName, setuserName] = useState("");
+    const [Userimage, setUserImage] = useState("");
+    const [submitLoading, setSubmitLoading] = useState(false);
+  const Userpayload = new FormData();
+  Userpayload.append("name", userName);
+    Userpayload.append("image", Userimage);
+    
+
+   
+    const AddUserBuisness = async (e) => {
+    e.preventDefault()
+    try {
+      const response = await axios.put(
+        `${Baseurl}api/v1/admin/weSupport/addUserinBusinessweSupport`,
+        Userpayload,
+        Auth
+      );
+      console.log("responseUser", response.data);
+       const msg = response.data.message;
+       Store.addNotification({
+         title: "",
+         message: msg,
+         type: "success",
+         insert: "bottom",
+         container: "bottom-right",
+         animationIn: ["animate__animated", "animate__fadeIn"],
+         animationOut: ["animate__animated", "animate__fadeOut"],
+         dismiss: {
+           duration: 2000,
+           onScreen: true,
+         },
+       });
+      fetchData();
+      setSubmitLoading(false);
+      props.onHide()
+    } catch (error) {
+      
+    }
+  }
+    
+     return (
+       <Modal
+         {...props}
+         size="lg"
+         aria-labelledby="contained-modal-title-vcenter"
+         centered
+       >
+         <Modal.Header closeButton>
+           <Modal.Title id="contained-modal-title-vcenter">
+             Create New User
+           </Modal.Title>
+         </Modal.Header>
+         <Modal.Body>
+           <Form onSubmit={AddUserBuisness}>
+             <Form.Group className="mb-3">
+               <Form.Label>Image</Form.Label>
+               <Form.Control
+                 type="file"
+                 onChange={(e) => setUserImage(e.target.files[0])}
+               />
+             </Form.Group>
+             <Form.Group className="mb-3">
+               <Form.Label>Name</Form.Label>
+               <Form.Control
+                 type="text"
+                 value={userName}
+                 onChange={(e) => setuserName(e.target.value)}
+               />
+             </Form.Group>
+
+             <Button
+               style={{
+                 backgroundColor: "#0c0c0c",
+                 borderRadius: "0",
+                 border: "1px solid #0c0c0c",
+               }}
+               type="submit"
+             >
+               {submitLoading ? (
+                 <Spinner animation="border" role="status" />
+               ) : (
+                 "Submit"
+               )}
+             </Button>
+           </Form>
+         </Modal.Body>
+       </Modal>
+     );
+}
+ const deleteUserHandler = async (id) => {
+   try {
+     const response = await axios.delete(
+       `${Baseurl}api/v1/admin/weSupport/deleteUserinBusinessweSupport/${id}`,
+       Auth
+     );
+           const msg = response.data.message;
+           Store.addNotification({
+             title: "",
+             message: msg,
+             type: "success",
+             insert: "bottom",
+             container: "bottom-right",
+             animationIn: ["animate__animated", "animate__fadeIn"],
+             animationOut: ["animate__animated", "animate__fadeOut"],
+             dismiss: {
+               duration: 2000,
+               onScreen: true,
+             },
+           });
+           fetchData();
+   } catch (error) {}
+ };
+
   const deleteHandler = async () => {
     try {
       const { res } = await axios.delete(
@@ -210,6 +326,10 @@ const GetBuisness = () => {
         onHide={() => setModalShow(false)}
       />
 
+      <MyAddUserBuisnessModal
+        show={UserModal}
+        onHide={() => setUserModal(false)}
+      />
       <section className="sectionCont">
         <div className="pb-4  w-full flex justify-between items-center">
           <span
@@ -257,12 +377,21 @@ const GetBuisness = () => {
           <p className="desc"> {data?.desc} </p>
         </div>
 
+        <button
+          onClick={() => {
+            setUserModal(true);
+          }}
+          className="AddUserCss md:py-2 px-3 md:px-4 py-1 rounded-sm bg-[#0c0c0c] text-white tracking-wider"
+        >
+          Add User
+        </button>
+
         <div className="overFlowCont mt-5">
           <Table>
             <thead>
               <tr>
-                <th>Name</th>
                 <th>Image</th>
+                <th>Name</th>
                 <th></th>
               </tr>
             </thead>
@@ -274,7 +403,9 @@ const GetBuisness = () => {
                   </td>
                   <td>{i.name}</td>
                   <td>
-                    <i className="fa-solid fa-trash" />
+                    <i className="fa-solid fa-trash" 
+                      onClick={(e)=>deleteUserHandler(i._id)}
+                    />
                   </td>
                 </tr>
               ))}
