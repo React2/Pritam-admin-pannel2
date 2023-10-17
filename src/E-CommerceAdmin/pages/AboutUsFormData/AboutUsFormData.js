@@ -1,3 +1,5 @@
+
+
 import React from 'react'
 import HOC from '../../layout/HOC'
 
@@ -14,7 +16,9 @@ import axios from "axios";
 import { Store } from "react-notifications-component";
 import { useState } from 'react';
 import { useEffect } from 'react';
-const Bartending = () => {
+
+
+const AboutUsFormData = () => {
   const [modalShow, setModalShow] = useState(false);
   const [descModal, setDescModal] = useState(false);
   const [desc, setDesc] = useState([]);
@@ -38,45 +42,38 @@ const Bartending = () => {
   const fetchData = async () => {
     try {
       const { data } = await axios.get(
-        `${Baseurl}api/v1/admin/Bartending/getBartending`
+        `https://pritam-backend.vercel.app/api/v1/admin/Bartending/getFormData/aboutUs`
       );
       setData(data.data);
       console.log(data.data);
       setTotal(data.data.length);
-      const youtubeVideoLink = data.data.youtubeLink;
-      const videoId = getVideoIdFromUrl(youtubeVideoLink); 
-       if (videoId) {
-        console.log("Video ID:", videoId);
+        const youtubeVideoLink = data.data.youtubeLink;
+        console.log("youtubeLink", youtubeVideoLink);
+        const videoId = getVideoIdFromUrl(youtubeVideoLink);
+        if (videoId) {
+          console.log("Video ID:", videoId);
           const videourl = `https://www.youtube.com/embed/${videoId}?si=InTXwsXs3JbTwAMf&amp;start=3`;
-         setYoutubeVideo(videourl);
-         setData((prev) => {
-
-             return {...prev,"updateyoutubelink":videourl}
-      
-         })
-      } else {
-        console.log("Invalid YouTube URL");
-      }
+          setData((prev) => {
+            return { ...prev, updateyoutubelink: videourl };
+          });
+        } else {
+          console.log("Invalid YouTube URL");
+        }
     } catch (e) {
       console.log(e);
     }
   };
 
-  function getVideoIdFromUrl(url) {
-  
-    const regExp = /v=([a-zA-Z0-9_-]+)/;
-    const match = url.match(regExp);
+ function getVideoIdFromUrl(url) {
+   const regExp = /v=([a-zA-Z0-9_-]+)/;
+   const match = url.match(regExp);
 
-    if (match && match[1]) {
-      return match[1];
-    }
+   if (match && match[1]) {
+     return match[1];
+   }
 
-    return null;
-  }
-
-
-
-
+   return null;
+ }
   useEffect(() => {
     fetchData();
   }, []);
@@ -88,7 +85,7 @@ const Bartending = () => {
         Auth
       );
       const msg = data.message;
-         fetchData();
+      fetchData();
       Store.addNotification({
         title: "",
         message: msg,
@@ -102,7 +99,6 @@ const Bartending = () => {
           onScreen: true,
         },
       });
-   
     } catch (e) {
       console.log(e);
     }
@@ -117,18 +113,14 @@ const Bartending = () => {
     const [desc, setDesc] = useState("");
     const [contactUsformTitle, setcontactUsformTitle] = useState("");
     const [contactUsformDesc, setcontactUsformDescA] = useState("");
-    const [contactUsformAvaili, setcontactUsformAvailiability] =
-      useState("");
+    const [contactUsformAvaili, setcontactUsformAvailiability] = useState("");
     const [contactUsformWhatsApp, setcontactUsformWhatsApp] = useState("");
     const [contactUsformCall, setcontactUsformCall] = useState("");
     const [contactUsformPrivacy, setcontactUsformPrivacy] = useState("");
     const [privacy, setprivacy] = useState("");
     const [contactUsformTerms, setcontactUsformTerms] = useState("");
-    const [youtubeLink, setyoutubeLink] = useState("");
     const [image, setImage] = useState("");
-
-
-
+   const [youtubeLink, setYoutubeLink] = useState("");
     const payload = {
       title,
       desc,
@@ -138,13 +130,10 @@ const Bartending = () => {
       contactUsformWhatsApp,
       contactUsformCall,
       contactUsformPrivacy,
-      privacy,
       contactUsformTerms,
       youtubeLink,
       image,
     };
- 
-   
 
     const fromData = new FormData();
     fromData.append("title", title);
@@ -155,86 +144,16 @@ const Bartending = () => {
     fromData.append("contactUsformWhatApp", contactUsformWhatsApp);
     fromData.append("contactUsformCall", contactUsformCall);
     fromData.append("contactUsformPrivacy", contactUsformPrivacy);
-    fromData.append("privacy", privacy);
     fromData.append("contactUsformTerms", contactUsformTerms);
-    fromData.append("youtubeLink", youtubeLink);
     fromData.append("image", image);
-    fromData.append("type", "bartending");
-
-
-
-    //  console.log("payload", payload);
-    //    for (let key in payload) {
-    //      fromData.append(key, payload[key]);
-    //  }
-    // if (title) {
-    //   fromData.append("title", title);
-    // }
-    // if (desc) {
-    //   fromData.append("desc", desc);
-    // }
-    // if (academyDesc) {
-    //   fromData.append("academyDesc", academyDesc);
-    // }
-    // if (academyHeading) {
-    //   fromData.append("academyHeading", academyHeading);
-    // }
-    // if (academyTitle) {
-    //   fromData.append("academyTitle", academyTitle);
-    // }
-    // if (youtubeLink) {
-    //   fromData.append("youtubeLink", youtubeLink);
-    // }
-    // if (formTitle) {
-    //   fromData.append("formTitle", formTitle);
-    // }
-    // if (formDescA) {
-    //   fromData.append("formDesc", formDescA);
-    // }
-    // if (formPrivacy) {
-    //   fromData.append("formPrivacy", formPrivacy);
-    // }
-    // if (formImage) {
-    //   fromData.append("formImage", formImage);
-    // }
-    // if (formWhatApp) {
-    //   fromData.append("formWhatApp", formWhatApp);
-    // }
-    // if (formCall) {
-    //   fromData.append("formCall", formCall);
-    // }
-    // if (consultancyTitleFirst) {
-    //   fromData.append("consultancyTitle[0]", consultancyTitleFirst);
-    // }
-    // if (consultancyTitleSecond) {
-    //   fromData.append("consultancyTitle[1]", consultancyTitleSecond);
-    // }
-    // if (consultancyTitlethird) {
-    //   fromData.append("consultancyTitle[2]", consultancyTitlethird);
-    // }
-    // if (consultancyDescFirst) {
-    //   fromData.append("consultancyDesc[0]", consultancyDescFirst);
-    // }
-    // if (consultancyDescSecond) {
-    //   fromData.append("consultancyDesc[1]", consultancyDescSecond);
-    // }
-    // if (consultancyDescthird) {
-    //   fromData.append("consultancyDesc[2]", consultancyDescthird);
-    // }
-    // if (mainImage) {
-    //   mainImage.forEach((item) => {
-    //     fromData.append("image", item);
-    //   });
-    // }
-
-    //  console.log("typeof ",mainImage)
+    fromData.append("type", "aboutUs");
+     fromData.append("youtubeLink", youtubeLink);
 
     const postHandler = async (e) => {
       e.preventDefault();
 
       setSubmitLoading(true);
       try {
-        // console.log("formdata",fromData);
         const data = await axios.post(
           `https://pritam-backend.vercel.app/api/v1/admin/Bartending/addBartending`,
           fromData,
@@ -243,7 +162,7 @@ const Bartending = () => {
         const msg = data.data.message;
         Store.addNotification({
           title: "",
-          message: msg,
+          message: "About us Form Added",
           type: "success",
           insert: "bottom",
           container: "bottom-right",
@@ -310,7 +229,15 @@ const Bartending = () => {
                 onChange={(e) => setImage(e.target.files[0])}
               />
             </Form.Group>
-
+            <Form.Group className="mb-3">
+              <Form.Label>Youtube Video Link</Form.Label>
+              <FloatingLabel>
+                <Form.Control
+                  value={youtubeLink}
+                  onChange={(e) => setYoutubeLink(e.target.value)}
+                />
+              </FloatingLabel>
+            </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Title</Form.Label>
               <Form.Control
@@ -401,17 +328,7 @@ const Bartending = () => {
                 />
               </FloatingLabel>
             </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>privacy</Form.Label>
-              <FloatingLabel>
-                <Form.Control
-                  as="textarea"
-                  style={{ height: "100px" }}
-                  value={privacy}
-                  onChange={(e) => setprivacy(e.target.value)}
-                />
-              </FloatingLabel>
-            </Form.Group>
+
             <Form.Group className="mb-3">
               <Form.Label>contact Us form Terms</Form.Label>
               <FloatingLabel>
@@ -420,15 +337,6 @@ const Bartending = () => {
                   style={{ height: "100px" }}
                   value={contactUsformTerms}
                   onChange={(e) => setcontactUsformTerms(e.target.value)}
-                />
-              </FloatingLabel>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>youtube Link</Form.Label>
-              <FloatingLabel>
-                <Form.Control
-                  type="text"
-                  onChange={(e) => setyoutubeLink(e.target.value)}
                 />
               </FloatingLabel>
             </Form.Group>
@@ -489,7 +397,7 @@ const Bartending = () => {
             className="tracking-widest text-slate-900 font-semibold uppercase"
             style={{ fontSize: "20px" }}
           >
-            Bartending
+            aboutUs Form Data
           </span>
           <button
             onClick={() => {
@@ -499,7 +407,7 @@ const Bartending = () => {
             }}
             className="md:py-2 px-3 md:px-4 py-1 rounded-sm bg-[#0c0c0c] text-white tracking-wider"
           >
-          Edit
+            {data?.length === 0 ? "Create" : "Edit"}
           </button>
           <span className="flexCont">
             <i
@@ -538,11 +446,10 @@ const Bartending = () => {
               <p>{data.contactUsformDesc}</p>
               <h4>contact Us form Privacy</h4>
               <p>{data.contactUsformPrivacy}</p>
-              <h4>privacy</h4>
-              <p>{data.privacy}</p>
               <h4>contact Us form Terms</h4>
               <p>{data.contactUsformTerms}</p>
-              <div style={{ width: "90%", margin: "40px auto" }}>
+
+              <div style={{ width: "100%", margin: "40px auto" }}>
                 <iframe
                   width="80%"
                   height="400"
@@ -577,4 +484,4 @@ const Bartending = () => {
   );
 };
 
-export default HOC(Bartending)
+export default HOC(AboutUsFormData);

@@ -1,4 +1,4 @@
-/** @format */
+
 
 import React, { useEffect, useState } from "react";
 import HOC from "../../layout/HOC";
@@ -14,7 +14,7 @@ import {
 import axios from "axios";
 import { Store } from "react-notifications-component";
 
-const StaffTalentedType = () => {
+const ContactDetailOffice = () => {
   const [modalShow, setModalShow] = useState(false);
   const [descModal, setDescModal] = useState(false);
   const [desc, setDesc] = useState([]);
@@ -40,7 +40,7 @@ const StaffTalentedType = () => {
   const fetchData = async () => {
     try {
       const { data } = await axios.get(
-        `${Baseurl}api/v1/admin/getstaffTalentedType`
+        `${Baseurl}api/v1/admin/viewContactDetailsOffice`
       );
       setData(data.data);
       setTotal(data.data.length);
@@ -49,17 +49,7 @@ const StaffTalentedType = () => {
       console.log(e);
     }
   };
-   function getVideoIdFromUrl(url) {
-     const regExp = /v=([a-zA-Z0-9_-]+)/;
-     const match = url.match(regExp);
-
-     if (match && match[1]) {
-       return match[1];
-     }
-
-     return null;
-   }
-
+  
   useEffect(() => {
     fetchData();
   }, []);
@@ -67,7 +57,7 @@ const StaffTalentedType = () => {
   const deleteHandler = async (id) => {
     try {
       const { data } = await axios.delete(
-        `${Baseurl}api/v1/admin/DeletestaffTalentedType/${id}`,
+        `${Baseurl}api/v1/admin/DeleteContactDetails/${id}`,
         Auth
       );
       const msg = data.message;
@@ -96,84 +86,25 @@ const StaffTalentedType = () => {
      const [uploaded, setUploaded] = useState(false);
      const [title, setTitle] = useState(editData?.title);
      const [mainImage, setMainImage] = useState("");
-     const [desc, setDesc] = useState(editData?.desc);
-     const [youtubeLink, setyoutubelink] = useState(editData?.youtubeLink);
-     const [contactUsformTitle, setcontactUsformTitle] = useState(
-       editData.contactUsformTitle
+     const [description, setDescription] = useState(editData?.desc);
+  
+     const [mobileNumber, setmobileNumber] = useState(
+       editData?.mobileNumber
      );
-     const [contactUsformDesc, setcontactUsformDesc] = useState(
-       editData?.contactUsformDesc
+     const [email, setemail] = useState(
+       editData?.email
      );
-     const [contactUsformAvailibility, setcontactUsformAvailibility] = useState(
-       editData?.contactUsformAvailibility
-     );
-     const [contactUsformPrivacy, setcontactUsformPrivacy] = useState(
-       editData?.contactUsformPrivacy
-     );
-     const [eTitle, seteTitle] = useState(editData?.eTitle);
-     const [eDesc, seteDesc] = useState(editData?.eDesc);
-     const [eformWhatApp, seteformWhatApp] = useState(editData?.eformWhatApp);
-     const [eformCall, seteformCall] = useState(editData?.eformCall);
-     const [eformPrivacy, seteformPrivacy] = useState(editData.eformPrivacy);
-     const [eformImage, setFormImage] = useState("");
-const [descriptionTitleFirst, setDescriptionTitleFirst] = useState("");
-const [descriptionTitleSecond, setDescriptionTitleSecond] = useState("");
-const [descriptionTitlethird, setDescriptionTitlethird] = useState("");
-const [descriptionDescFirst, setDescriptionDescFirst] = useState("");
-const [descriptionDescSecond, setDescriptionDescSecond] = useState("");
-const [descriptionDescthird, setDescriptionDescthird] = useState("");
-
+     const [address, setAddress] = useState(editData?.address)
+     const [image,setImage]=useState("")
      const payload = {
        title,
-       desc,
-       image: mainImage,
-       contactUsformTitle,
-       contactUsformDesc,
-       contactUsformAvailibility,
-       contactUsformPrivacy,
-       youtubeLink,
-       eTitle,
-       eDesc,
-       eformWhatApp,
-       eformCall,
-       eformPrivacy,
-       eformImage,
-       "descriptionTitle[0]": descriptionTitleFirst,
-       "descriptionDesc[0]":descriptionDescFirst,
-       "descriptionTitle[1]": descriptionTitleFirst,
-       "descriptionDesc[1]": descriptionDescSecond,
-       "descriptionTitle[2]":descriptionTitlethird,
-       "descriptionDesc[2]": descriptionDescthird,
+       description,
+       email,mobileNumber,address,
+     
        
      };
 
-     const ClodinaryPost = (value, type) => {
-       setImageLoading(true);
-       const data = new FormData();
-       data.append("file", value);
-       data.append("upload_preset", "ml_default");
-       data.append("cloud_name", "dbcnha741");
-       fetch("https://api.cloudinary.com/v1_1/dbcnha741/image/upload", {
-         method: "post",
-         body: data,
-       })
-         .then((res) => res.json())
-         .then((data) => {
-           if (type == "mainImage") {
-             setMainImage(data.url);
-             console.log("imageUrl", data.url);
-             setUploaded(true);
-             setImageLoading(false);
-           } else if (type == "eformImage") {
-             setFormImage(data.url);
-             console.log("imageUrl", data.url);
-           }
-         })
-         .catch((err) => {
-           console.log(err);
-         });
-     };
-
+  
      const postHandler = async (e) => {
        e.preventDefault();
        setSubmitLoading(true);
@@ -185,7 +116,7 @@ const [descriptionDescthird, setDescriptionDescthird] = useState("");
          }
 
          const data = await axios.post(
-           `${Baseurl}api/v1/admin/addStaffTalentedType`,
+           `${Baseurl}api/v1/admin/addContactDetailsOffice`,
            formdataforPost,
            Auth
          );
@@ -226,76 +157,26 @@ const [descriptionDescthird, setDescriptionDescthird] = useState("");
          setSubmitLoading(false);
        }
      };
+     console.log("editid", id);
      const edithandler = async (e) => {
        e.preventDefault();
        setSubmitLoading(true);
        console.log("payload", payload);
        try {
-         const fromData=new FormData()
-       if (title) {
-     fromData.append("title", title);
-   }
-   if (desc) {
-     fromData.append("desc", desc);
-   }
-   if (contactUsformTitle) {
-     fromData.append("contactUsformTitle", contactUsformTitle);
-   }
-   if (contactUsformDesc) {
-     fromData.append("contactUsformDesc", contactUsformDesc);
-   }
-   if (contactUsformAvailibility) {
-      fromData.append("contactUsformAvailibility", contactUsformAvailibility);
-   }
-   if (contactUsformPrivacy) {
-      fromData.append("contactUsformPrivacy", contactUsformPrivacy);
-   }
-   if (youtubeLink) {
-        fromData.append("youtubeLink", youtubeLink);
-   }
-   if (eTitle) {
-        fromData.append("eTitle", eTitle);
-   }
-   if (eDesc) {
-        fromData.append("eDesc", eDesc);
-   }
-   if (eformWhatApp) {
-       fromData.append("eformWhatApp", eformWhatApp);
-   }
-   if (eformCall) {
-        fromData.append("eformCall", eformCall);
-   }
-   if (descriptionTitleFirst) {
-       fromData.append("descriptionTitle[0]", descriptionTitleFirst);
-   }
-   if (descriptionDescFirst) {
-        fromData.append("descriptionDesc[0]", descriptionDescFirst);
-   }
-   if (descriptionTitleFirst) {
-        fromData.append("descriptionTitle[1]", descriptionTitleFirst);
-   }
-   if (descriptionDescSecond) {
-     fromData.append("descriptionDesc[1]", descriptionDescSecond);
-   }
-   if (descriptionTitlethird) {
-     fromData.append("descriptionTitle[2]", descriptionTitlethird);
-   }
-   if (descriptionDescthird) {
-     
-   fromData.append("descriptionDesc[2]", descriptionDescthird);
-   }
-   if (mainImage) {
-    
-      fromData.append("image", mainImage);
-    }
-         const data = await axios.post(
-           `${Baseurl}api/v1/admin/addStaffTalentedType`,
+         const fromData = new FormData()
+
+          for (let key in payload) {
+            fromData.append(key, payload[key]);
+          }
+         const data = await axios.put(
+           `${Baseurl}api/v1/admin/updateContactDetailsOffice/${id}`,
            fromData,
            Auth
          );
 
 
          const msg = data.data.message;
+         console.log("data",data.data)
          console.log("checkmessages", msg);
          Store.addNotification({
            title: "",
@@ -364,7 +245,7 @@ const [descriptionDescthird, setDescriptionDescthird] = useState("");
                <Form.Label>Image</Form.Label>
                <Form.Control
                  type="file"
-                 onChange={(e) => ClodinaryPost(e.target.files[0], "mainImage")}
+                 onChange={(e) => setImage(e.target.files[0])}
                />
              </Form.Group>
              <Form.Group className="mb-3">
@@ -381,166 +262,36 @@ const [descriptionDescthird, setDescriptionDescthird] = useState("");
                  <Form.Control
                    as="textarea"
                    style={{ height: "100px" }}
-                   value={desc}
-                   onChange={(e) => setDesc(e.target.value)}
+                   value={description}
+                   onChange={(e) => setDescription(e.target.value)}
                  />
                </FloatingLabel>
              </Form.Group>
              <Form.Group className="mb-3">
-               <Form.Label>YouTube Link</Form.Label>
+               <Form.Label>mobile Number</Form.Label>
                <Form.Control
                  type="text"
-                 value={youtubeLink}
-                 onChange={(e) => setyoutubelink(e.target.value)}
+                 value={mobileNumber}
+                 onChange={(e) => setmobileNumber(e.target.value)}
                />
              </Form.Group>
              <Form.Group className="mb-3">
-               <Form.Label>Contact Us From Tittle</Form.Label>
+               <Form.Label>email </Form.Label>
                <Form.Control
                  type="text"
-                 value={contactUsformTitle}
-                 onChange={(e) => setcontactUsformTitle(e.target.value)}
+                 value={email}
+                 onChange={(e) => setemail(e.target.value)}
                />
              </Form.Group>
              <Form.Group className="mb-3">
-               <Form.Label>Contact Us From Description </Form.Label>
+               <Form.Label>address</Form.Label>
                <Form.Control
                  type="text"
-                 value={contactUsformDesc}
-                 onChange={(e) => setcontactUsformDesc(e.target.value)}
+                 value={address}
+                 onChange={(e) => setAddress(e.target.value)}
                />
              </Form.Group>
-             <Form.Group className="mb-3">
-               <Form.Label>Contact Us From Availability</Form.Label>
-               <Form.Control
-                 type="text"
-                 value={contactUsformAvailibility}
-                 onChange={(e) => setcontactUsformAvailibility(e.target.value)}
-               />
-             </Form.Group>
-             <Form.Group className="mb-3">
-               <Form.Label>Contact Us From Policy</Form.Label>
-               <Form.Control
-                 type="text"
-                 value={contactUsformPrivacy}
-                 onChange={(e) => setcontactUsformPrivacy(e.target.value)}
-               />
-             </Form.Group>
-             <Form.Group className="mb-3">
-               <Form.Label>E-tittle</Form.Label>
-               <Form.Control
-                 type="text"
-                 value={eTitle}
-                 onChange={(e) => seteTitle(e.target.value)}
-               />
-             </Form.Group>
-             <Form.Group className="mb-3">
-               <Form.Label>E-desc</Form.Label>
-               <Form.Control
-                 type="text"
-                 value={eDesc}
-                 onChange={(e) => seteDesc(e.target.value)}
-               />
-             </Form.Group>
-             <Form.Group className="mb-3">
-               <Form.Label>WhatsApp Number</Form.Label>
-               <Form.Control
-                 type="text"
-                 value={eformWhatApp}
-                 onChange={(e) => seteformWhatApp(e.target.value)}
-               />
-             </Form.Group>
-             <Form.Group className="mb-3">
-               <Form.Label>Call Number</Form.Label>
-               <Form.Control
-                 type="text"
-                 value={eformCall}
-                 onChange={(e) => seteformCall(e.target.value)}
-               />
-             </Form.Group>
-             <Form.Group className="mb-3">
-               <Form.Label>Form Privacy</Form.Label>
-               <Form.Control
-                 type="text"
-                 value={eformPrivacy}
-                 onChange={(e) => seteformPrivacy(e.target.value)}
-               />
-             </Form.Group>
-             <Form.Group className="mb-3">
-               <Form.Label>e-form Image</Form.Label>
-               <Form.Control
-                 type="file"
-                 onChange={(e) =>
-                   ClodinaryPost(e.target.files[0], "eformImage")
-                 }
-               />
-             </Form.Group>
-             <Form.Group className="mb-3">
-               <Form.Label>Description Title First</Form.Label>
-               <FloatingLabel>
-                 <Form.Control
-                   as="textarea"
-                   style={{ height: "100px" }}
-                   value={descriptionTitleFirst}
-                   onChange={(e) => setDescriptionTitleFirst(e.target.value)}
-                 />
-               </FloatingLabel>
-             </Form.Group>
-             <Form.Group className="mb-3">
-               <Form.Label>Description Title Second</Form.Label>
-               <FloatingLabel>
-                 <Form.Control
-                   as="textarea"
-                   style={{ height: "100px" }}
-                   value={descriptionTitleSecond}
-                   onChange={(e) => setDescriptionTitleSecond(e.target.value)}
-                 />
-               </FloatingLabel>
-             </Form.Group>
-             <Form.Group className="mb-3">
-               <Form.Label>Description Title Third</Form.Label>
-               <FloatingLabel>
-                 <Form.Control
-                   as="textarea"
-                   style={{ height: "100px" }}
-                   value={descriptionTitlethird}
-                   onChange={(e) => setDescriptionTitlethird(e.target.value)}
-                 />
-               </FloatingLabel>
-             </Form.Group>
-             <Form.Group className="mb-3">
-               <Form.Label>Description Description First</Form.Label>
-               <FloatingLabel>
-                 <Form.Control
-                   as="textarea"
-                   style={{ height: "100px" }}
-                   value={descriptionDescFirst}
-                   onChange={(e) => setDescriptionDescFirst(e.target.value)}
-                 />
-               </FloatingLabel>
-             </Form.Group>
-             <Form.Group className="mb-3">
-               <Form.Label>Description Description Second</Form.Label>
-               <FloatingLabel>
-                 <Form.Control
-                   as="textarea"
-                   style={{ height: "100px" }}
-                   value={descriptionDescSecond}
-                   onChange={(e) => setDescriptionDescSecond(e.target.value)}
-                 />
-               </FloatingLabel>
-             </Form.Group>
-             <Form.Group className="mb-3">
-               <Form.Label>Description Description Third</Form.Label>
-               <FloatingLabel>
-                 <Form.Control
-                   as="textarea"
-                   style={{ height: "100px" }}
-                   value={descriptionDescthird}
-                   onChange={(e) => setDescriptionDescthird(e.target.value)}
-                 />
-               </FloatingLabel>
-             </Form.Group>
+  
              <Button
                style={{
                  backgroundColor: "#0c0c0c",
@@ -731,10 +482,9 @@ const [descriptionDescthird, setDescriptionDescthird] = useState("");
                     <th>Image</th>
                     <th>Title</th>
                     <th>Description</th>
-                    <th>Contact Form Title</th>
-                    <th>WhatAppDetail</th>
-                    <th>Created At</th>
-                    <th>Show Full Content</th>
+                    <th>mobileNumber</th>
+                    <th>email</th>
+                    <th>address</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -750,46 +500,17 @@ const [descriptionDescthird, setDescriptionDescthird] = useState("");
                         <button
                           className="md:py-2 px-3 md:px-4 py-1 rounded-sm bg-[#0c0c0c] text-white tracking-wider"
                           onClick={() => {
-                            setDesc(i.desc);
+                            setDesc(i.description);
                             setDescModal(true);
                           }}
                         >
                           View
                         </button>
                       </td>
-                      <td>{i.contactUsformTitle}</td>
-                      <td>{i.eformWhatApp}</td>
+                      <td>{i.mobileNumber}</td>
+                      <td>{i.email}</td>
+                      <td>{i.address}</td>
                       <td>{i.createdAt?.substr(0, 10)} </td>
-
-                      <td>
-                        <span className="flexCont">
-                          <button
-                            className="md:py-2 px-3 md:px-4 py-1 rounded-sm bg-[#0c0c0c] text-white tracking-wider"
-                            onClick={(e) => {
-                              setfullViewData(i);
-                              setShowFullData(true);
-                              const youtubeVideoLink = i.youtubeLink;
-                              console.log("youtubeLink", youtubeVideoLink);
-                              const videoId =
-                                getVideoIdFromUrl(youtubeVideoLink);
-                              if (videoId) {
-                                console.log("Video ID:", videoId);
-                                const videourl = `https://www.youtube.com/embed/${videoId}?si=InTXwsXs3JbTwAMf&amp;start=3`;
-                                setfullViewData((prev) => {
-                                  return {
-                                    ...prev,
-                                    updateyoutubelink: videourl,
-                                  };
-                                });
-                              } else {
-                                console.log("Invalid YouTube URL");
-                              }
-                            }}
-                          >
-                            Show All
-                          </button>
-                        </span>
-                      </td>
                       <td>
                         <span className="flexCont">
                           <i
@@ -819,4 +540,4 @@ const [descriptionDescthird, setDescriptionDescthird] = useState("");
   );
 };
 
-export default HOC(StaffTalentedType);
+export default HOC(ContactDetailOffice);

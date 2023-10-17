@@ -18,7 +18,7 @@ const Ads = () => {
   const [modalShow, setModalShow] = useState(false);
   const [data, setData] = useState({});
   const [editData, setEditData] = useState({});
-
+  const [youtubeVideo, setYoutubeVideo] = useState("");
   const token = localStorage.getItem("AdminToken");
 
   const Auth = {
@@ -33,15 +33,64 @@ const Ads = () => {
     try {
       const { data } = await axios.get(`${Baseurl}api/v1/admin/getAds`);
       setData(data.data);
+          const youtubeVideoLink = data.data.link;
+      const videoId = getVideoIdFromUrl(youtubeVideoLink); 
+      if (videoId) {
+        console.log("Video ID:", videoId);
+        const videourl = `https://www.youtube.com/embed/${videoId}?si=InTXwsXs3JbTwAMf&amp;start=3`;
+        setYoutubeVideo(videourl);
+        setData((prev) => {
+
+          return { ...prev, "updateyoutubelink": videourl }
+      
+        })
+      }
     } catch (e) {
       console.log(e);
     }
   };
+ function getVideoIdFromUrl(url) {
+  
+    const regExp = /v=([a-zA-Z0-9_-]+)/;
+    const match = url.match(regExp);
 
+    if (match && match[1]) {
+      return match[1];
+    }
+
+    return null;
+ }
+  
+  
   useEffect(() => {
     fetchData();
   }, []);
-
+  const deleteHandler = async (id) => {
+    try {
+      console.log("id", id);
+      const data = await axios.delete(
+        `https://pritam-backend.vercel.app/api/v1/admin/DeleteAds/${id}`,
+        Auth
+      );
+         const msg = data.data.message;
+         Store.addNotification({
+           title: "",
+           message: msg,
+           type: "success",
+           insert: "bottom",
+           container: "bottom-right",
+           animationIn: ["animate__animated", "animate__fadeIn"],
+           animationOut: ["animate__animated", "animate__fadeOut"],
+           dismiss: {
+             duration: 2000,
+             onScreen: true,
+           },
+         });
+         fetchData();
+    } catch (error) {
+      
+    }
+  }
   function MyVerticallyCenteredModal(props) {
     const [submitLoading, setSubmitLoading] = useState(false);
     const [title, setTitle] = useState(editData?.title);
@@ -49,8 +98,10 @@ const Ads = () => {
     const [images, setImages] = useState("");
     const [description, setDescription] = useState(editData?.description);
     const [banner, setBanner] = useState("");
+    const [link, setLink] = useState("");
     const [desc, setDesc] = useState(editData?.desc ? editData?.desc : []);
     const [descName, setDescName] = useState("");
+
 
     const queryAdder = () => {
       setDesc((prev) => [...prev, descName]);
@@ -67,6 +118,8 @@ const Ads = () => {
     payload.append("images", images);
     payload.append("description", description);
     payload.append("banner", banner);
+    payload.append("link", link);
+
     Array.from(desc).forEach((img) => {
       payload.append("desc", img);
     });
@@ -120,7 +173,7 @@ const Ads = () => {
     return (
       <Modal
         {...props}
-        size='lg'
+        size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
@@ -141,6 +194,13 @@ const Ads = () => {
                 onChange={(e) => setImage(e.target.files[0])}
               />
             </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>youtubeLink</Form.Label>
+              <Form.Control
+                type="text"
+                onChange={(e) => setLink(e.target.value)}
+              />
+            </Form.Group>
             <div className="multiple_Image">
               <img src={editData?.banner} alt="" />
             </div>
@@ -155,7 +215,7 @@ const Ads = () => {
               <img src={editData?.images?.[0]} alt="" />
             </div>
             <Form.Group className="mb-3">
-              <Form.Label>Description Image</Form.Label>
+              <Form.Label>Desc Image</Form.Label>
               <Form.Control
                 type="file"
                 onChange={(e) => setImages(e.target.files[0])}
@@ -269,6 +329,12 @@ const Ads = () => {
           >
             Create New
           </button>
+          <span className="flexCont">
+            <i
+              className="fa-solid fa-trash"
+              onClick={() => deleteHandler(data?._id)}
+            />
+          </span>
         </div>
 
         {!data ? (
@@ -329,7 +395,17 @@ const Ads = () => {
           <p className="title">Main Description</p>
           <p className="desc"> {data?.description} </p>
         </div>
-
+        <div style={{ width: "90%", margin: "40px auto" }}>
+          <iframe
+            width="80%"
+            height="400"
+            src={youtubeVideo}
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+        </div>
         <div className="InfoBox mt-5">
           <p className="title">Small Description</p>
           {data?.desc?.map((i, index) => (

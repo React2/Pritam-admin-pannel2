@@ -22,7 +22,7 @@ const Faq = () => {
   const [edit, setEdit] = useState(false);
   const [total, setTotal] = useState(0);
   const [editData, setEditData] = useState({});
-  const [defaultType, setdefaultType] = useState("Home");
+  const [defaultType, setdefaultType] = useState("EventHome");
 
   const token = localStorage.getItem("AdminToken");
 
@@ -305,10 +305,12 @@ const Faq = () => {
           <Alert>No FAQ Found !</Alert>
         ) : (
           <>
-            <select onChange={(e) => setdefaultType(e.target.value)} className="SelectTypeOfFaq">
-              <option>Select Type</option>
-              <option value="Home">Home</option>
+            <select
+              onChange={(e) => setdefaultType(e.target.value)}
+              className="SelectTypeOfFaq"
+            >
               <option value="EventHome">EventHome</option>
+              <option value="Home">Home</option>
             </select>
             <div className="overFlowCont">
               <Table>

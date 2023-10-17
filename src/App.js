@@ -34,6 +34,12 @@ import StaffTalented from "./E-CommerceAdmin/pages/StaffTalented/StaffTalented";
 // add new routes
 import PageDescription from "./E-CommerceAdmin/pages/PageDescription/PageDescription";
 import Bartending from "./E-CommerceAdmin/pages/Bartending/Bartending";
+import FreeLancingFormData from "./E-CommerceAdmin/pages/FreeLancingFormData/FreeLancingFormData";
+import AboutUsFormData from "./E-CommerceAdmin/pages/AboutUsFormData/AboutUsFormData";
+import ContactDetailOffice from "./E-CommerceAdmin/pages/ContactDetailOffice/ContactDetailOffice";
+import ContactDetails from "./E-CommerceAdmin/pages/ContactDetails/ContactDetails";
+import ContactUsFormData from "./E-CommerceAdmin/pages/ContactUsFormdata/ContactUsFormData";
+import FindWorkFormData from "./E-CommerceAdmin/pages/FindWorkFormData/FindWorkFormData";
 function App() {
   return (
     <>
@@ -62,6 +68,15 @@ function App() {
         <Route path="/popular-job" element={<PopularJob />} />
         <Route path="/trending_service" element={<TrendingService />} />
         <Route path="/freelancing" element={<Freelancing />} />
+        <Route path="/freelancing-formData" element={<FreeLancingFormData />} />
+        <Route path="/findwork-formData" element={<FindWorkFormData />} />
+        <Route path="/ContactUs-formData" element={<ContactUsFormData />} />
+        <Route path="/AboutUs-formData" element={<AboutUsFormData />} />
+        <Route path="/contact-details" element={<ContactDetails />} />
+        <Route
+          path="/contact-details-office"
+          element={<ContactDetailOffice />}
+        />
         <Route path="/ads" element={<Ads />} />
         <Route path="/event" element={<Event />} />
         <Route path="/sub-event/:id" element={<SubEvent />} />

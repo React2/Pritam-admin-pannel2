@@ -28,7 +28,7 @@ const Sidebar = ({ hamb, setHamb }) => {
         <i className="fa-solid fa-address-card text-xl mr-3 rounded-full" />
       ),
       link: "/Barthending",
-      name: "Barthending",
+      name: "Bartending",
     },
     {
       icon: (
@@ -69,6 +69,20 @@ const Sidebar = ({ hamb, setHamb }) => {
       icon: (
         <i className="fa-solid fa-address-card text-xl mr-3 rounded-full" />
       ),
+      link: "/contact-details",
+      name: "contactDetails",
+    },
+    {
+      icon: (
+        <i className="fa-solid fa-address-card text-xl mr-3 rounded-full" />
+      ),
+      link: "/contact-details-office",
+      name: "contact-details-office",
+    },
+    {
+      icon: (
+        <i className="fa-solid fa-address-card text-xl mr-3 rounded-full" />
+      ),
       link: "/getWhoWeAre",
       name: "Who we are",
     },
@@ -92,6 +106,34 @@ const Sidebar = ({ hamb, setHamb }) => {
       ),
       link: "/freelancing",
       name: "Freelancing",
+    },
+    {
+      icon: (
+        <i className="fa-solid fa-address-card text-xl mr-3 rounded-full" />
+      ),
+      link: "/freelancing-formData",
+      name: "freelancingFormData",
+    },
+    {
+      icon: (
+        <i className="fa-solid fa-address-card text-xl mr-3 rounded-full" />
+      ),
+      link: "/findwork-formData",
+      name: "findworkFormData",
+    },
+    {
+      icon: (
+        <i className="fa-solid fa-address-card text-xl mr-3 rounded-full" />
+      ),
+      link: "/ContactUs-formData",
+      name: "ContactUsFormData",
+    },
+    {
+      icon: (
+        <i className="fa-solid fa-address-card text-xl mr-3 rounded-full" />
+      ),
+      link: "/AboutUs-formData",
+      name: "AboutUsFormData",
     },
     {
       icon: (

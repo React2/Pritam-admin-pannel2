@@ -23,6 +23,7 @@ const CreateYourDreamsQuickly = () => {
   const [id, setId] = useState(null);
   const [edit, setEdit] = useState(false);
   const [editData, setEditData] = useState({});
+  
 
   const token = localStorage.getItem("AdminToken");
 
@@ -81,16 +82,30 @@ const CreateYourDreamsQuickly = () => {
     const [submitLoading, setSubmitLoading] = useState(false);
     const [imageLoading, setImageLoading] = useState(false);
     const [uploaded, setUploaded] = useState(false);
-    const [title, setTitle] = useState(editData?.title);
+    const [titleAgain, setTitleAgain] = useState("");
     const [mainImage, setMainImage] = useState("");
-    const [desc, setDesc] = useState(editData?.desc);
+    const [heading, setheading] = useState("");
+    const [descfirst, setDescfirst] = useState("");
+    const [descsecond, setDescsecond] = useState("");
+    const [descthird, setDescthird] = useState("");
+    const [image,setImage]=useState("")
 
     const payload = {
-      title,
-      mainImage,
-      desc,
-      image: mainImage,
+      title: titleAgain,
+      heading,
+      "desc[0]": descfirst,
+      "desc[1]": descsecond,
+      "desc[2]": descthird,
+      image: image,
     };
+    const formData = new FormData();
+    formData.append("title", titleAgain);
+    formData.append("heading", heading);
+    formData.append("desc[0]", descfirst);
+    formData.append("desc[1]", descsecond);
+    formData.append("desc[2]", descthird);
+    formData.append("image", image);
+    
 
     const ClodinaryPost = (value) => {
       setImageLoading(true);
@@ -118,8 +133,8 @@ const CreateYourDreamsQuickly = () => {
       setSubmitLoading(true);
       try {
         const data = await axios.post(
-          `${Baseurl}api/v1/admin/addstaffTalentedType`,
-          payload,
+          `${Baseurl}api/v1/admin/dream/createYourDreamsQuickly`,
+          formData,
           Auth
         );
         const msg = data.data.message;
@@ -189,26 +204,62 @@ const CreateYourDreamsQuickly = () => {
               <Form.Label>Image</Form.Label>
               <Form.Control
                 type="file"
-                onChange={(e) => ClodinaryPost(e.target.files[0])}
+                onChange={(e) => setImage(e.target.files[0])}
               />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Title</Form.Label>
               <Form.Control
                 type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={titleAgain}
+                onChange={(e) => setTitleAgain(e.target.value)}
               />
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Description</Form.Label>
+              <Form.Label>Heading</Form.Label>
               <FloatingLabel>
                 <Form.Control
                   as="textarea"
                   style={{ height: "100px" }}
-                  value={desc}
-                  onChange={(e) => setDesc(e.target.value)}
+                  value={heading}
+                  onChange={(e) => setheading(e.target.value)}
+                />
+              </FloatingLabel>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Description First</Form.Label>
+              <FloatingLabel>
+                <Form.Control
+                  as="textarea"
+                  style={{ height: "100px" }}
+                  value={descfirst}
+                  onChange={(e) => setDescfirst(e.target.value)}
+                />
+              </FloatingLabel>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Description Second</Form.Label>
+              <FloatingLabel>
+                <Form.Control
+                  as="textarea"
+                  style={{ height: "100px" }}
+                  value={descsecond}
+                  onChange={(e) => setDescsecond(e.target.value)}
+                />
+              </FloatingLabel>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Description Third</Form.Label>
+              <FloatingLabel>
+                <Form.Control
+                  as="textarea"
+                  style={{ height: "100px" }}
+                  value={descthird}
+                  onChange={(e) => setDescthird(e.target.value)}
                 />
               </FloatingLabel>
             </Form.Group>
@@ -313,9 +364,12 @@ const CreateYourDreamsQuickly = () => {
                 <p className="title">Title</p>
                 <p className="desc"> {data?.title} </p>
               </div>
-
               <div className="InfoBox mt-2">
                 <p className="title">Heading</p>
+                <p className="desc"> {data?.heading} </p>
+              </div>
+              <div className="InfoBox mt-2">
+                <p className="title">Description</p>
                 <p className="desc">
                   {" "}
                   {data.desc.map((i, index) => (

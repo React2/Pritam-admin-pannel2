@@ -45,10 +45,10 @@ const About = () => {
     fetchData();
   }, []);
 
-  const deleteHandler = async () => {
+  const deleteHandler = async (id) => {
     try {
       const { response } = await axios.delete(
-        `${Baseurl}api/v1/static/aboutUs/${data?.[0]?._id}`,
+        `${Baseurl}api/v1/static/aboutUs/${data?._id}`,
         Auth
       );
       const msg = response.message;
@@ -79,7 +79,7 @@ const About = () => {
     const [descArray, setDescArray] = useState(
       editData?.desc ? editData?.desc : []
     );
-
+    const [image, setImage] = useState("");
     const descObject = {
       title: secondTitle,
       desc,
@@ -88,8 +88,14 @@ const About = () => {
     const payload = {
       title,
       desc: descArray,
+      image
     };
-
+    const formdata = new FormData();
+    formdata.append("image", image);
+    descArray?.forEach(i => {
+      formdata.append("title", i.title);
+      formdata.append("desc", i.desc);
+    })
     const query_adder = () => {
       setDescArray((prev) => [...prev, descObject]);
       setSecondTitle("");
@@ -104,9 +110,10 @@ const About = () => {
       e.preventDefault();
       setSubmitLoading(true);
       try {
+ 
         const data = await axios.post(
           `${Baseurl}api/v1/static/createAboutus`,
-          payload,
+          formdata,
           Auth
         );
         const msg = data?.data?.message;
@@ -150,9 +157,10 @@ const About = () => {
       e.preventDefault();
       setSubmitLoading(true);
       try {
+               console.log("payload", payload);
         const data = await axios.put(
           `${Baseurl}api/v1/static/aboutUs/${id}`,
-          payload,
+          formdata,
           Auth
         );
         const msg = data?.data?.message;
@@ -207,17 +215,14 @@ const About = () => {
         <Modal.Body>
           <Form onSubmit={edit ? putHandler : postHandler}>
             <Form.Group className="mb-3">
-              <Form.Label>Title</Form.Label>
+              <Form.Label>Image</Form.Label>
               <FloatingLabel>
                 <Form.Control
-                  as="textarea"
-                  style={{ height: "100px" }}
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  type="file"
+                  onChange={(e) => setImage(e.target.files[0], "eForm")}
                 />
               </FloatingLabel>
             </Form.Group>
-
             <Form.Group className="mb-3">
               <Form.Label>Another Title</Form.Label>
               <Form.Control
@@ -331,32 +336,36 @@ const About = () => {
           </span>
           <div>
             <button
-              onClick={() => deleteHandler()}
+              onClick={() => deleteHandler(data?._id)}
               className="md:py-2 px-3 md:px-4 py-1 rounded-sm bg-[#d11a2a] text-white tracking-wider mr-3"
             >
               Delete
             </button>
-            <button
-              onClick={() => {
-                setEditData({});
-                setEdit(false);
-                setModalShow(true);
-              }}
-              className="md:py-2 px-3 md:px-4 py-1 rounded-sm bg-[#0c0c0c] text-white tracking-wider"
-            >
-              Create New
-            </button>
-            <button
-              onClick={() => {
-                setEditData(data?.[0]);
-                setId(data?.[0]?._id);
-                setEdit(true);
-                setModalShow(true);
-              }}
-              className="md:py-2 px-3 md:px-4 py-1 rounded-sm bg-[#0c0c0c] text-white tracking-wider ml-3"
-            >
-              Update
-            </button>
+            {!data._id && (
+              <button
+                onClick={() => {
+                  setEditData({});
+                  setEdit(false);
+                  setModalShow(true);
+                }}
+                className="md:py-2 px-3 md:px-4 py-1 rounded-sm bg-[#0c0c0c] text-white tracking-wider"
+              >
+                Create New
+              </button>
+            )}
+            {data._id && (
+              <button
+                onClick={() => {
+                  setEditData(data);
+                  setId(data?._id);
+                  setEdit(true);
+                  setModalShow(true);
+                }}
+                className="md:py-2 px-3 md:px-4 py-1 rounded-sm bg-[#0c0c0c] text-white tracking-wider ml-3"
+              >
+                Update
+              </button>
+            )}
           </div>
         </div>
 
@@ -364,11 +373,20 @@ const About = () => {
           <Alert>No Data Found !</Alert>
         ) : (
           <>
-            <div className="InfoBox">
-              <p className="title mb-1">Title </p>
-              <p className="desc"> {data?.[0]?.title} </p>
+            <div className="multiple_Image">
+              {data?.image && (
+                <img
+                  src={data?.image}
+                  style={{
+                    width: "300px",
+                    maxWidth: "300px",
+                    height: "300px",
+                    maxHeight: "400px",
+                  }}
+                  alt=""
+                />
+              )}
             </div>
-
             <div className="overFlowCont mt-5">
               <Table>
                 <thead>
@@ -379,7 +397,7 @@ const About = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {data?.[0]?.desc.map((i, index) => (
+                  {data?.desc.map((i, index) => (
                     <tr key={index}>
                       <td>#{index + 1} </td>
                       <td>{i.title} </td>

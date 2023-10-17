@@ -1,5 +1,5 @@
-import React from 'react'
-import HOC from '../../layout/HOC'
+import React from "react";
+import HOC from "../../layout/HOC";
 
 import {
   Table,
@@ -12,9 +12,10 @@ import {
 } from "react-bootstrap";
 import axios from "axios";
 import { Store } from "react-notifications-component";
-import { useState } from 'react';
-import { useEffect } from 'react';
-const Bartending = () => {
+import { useState } from "react";
+import { useEffect } from "react";
+
+const ContactUsFormData = () => {
   const [modalShow, setModalShow] = useState(false);
   const [descModal, setDescModal] = useState(false);
   const [desc, setDesc] = useState([]);
@@ -37,45 +38,17 @@ const Bartending = () => {
 
   const fetchData = async () => {
     try {
+      // https://pritam-backend.vercel.app/api/v1/admin/Bartending/getFormData/contactus
       const { data } = await axios.get(
-        `${Baseurl}api/v1/admin/Bartending/getBartending`
+        `${Baseurl}api/v1/admin/Bartending/getFormData/contactus`
       );
       setData(data.data);
       console.log(data.data);
       setTotal(data.data.length);
-      const youtubeVideoLink = data.data.youtubeLink;
-      const videoId = getVideoIdFromUrl(youtubeVideoLink); 
-       if (videoId) {
-        console.log("Video ID:", videoId);
-          const videourl = `https://www.youtube.com/embed/${videoId}?si=InTXwsXs3JbTwAMf&amp;start=3`;
-         setYoutubeVideo(videourl);
-         setData((prev) => {
-
-             return {...prev,"updateyoutubelink":videourl}
-      
-         })
-      } else {
-        console.log("Invalid YouTube URL");
-      }
     } catch (e) {
       console.log(e);
     }
   };
-
-  function getVideoIdFromUrl(url) {
-  
-    const regExp = /v=([a-zA-Z0-9_-]+)/;
-    const match = url.match(regExp);
-
-    if (match && match[1]) {
-      return match[1];
-    }
-
-    return null;
-  }
-
-
-
 
   useEffect(() => {
     fetchData();
@@ -88,7 +61,7 @@ const Bartending = () => {
         Auth
       );
       const msg = data.message;
-         fetchData();
+      fetchData();
       Store.addNotification({
         title: "",
         message: msg,
@@ -102,32 +75,20 @@ const Bartending = () => {
           onScreen: true,
         },
       });
-   
     } catch (e) {
       console.log(e);
     }
   };
 
   function MyVerticallyCenteredModal(props) {
-    const [submitLoading, setSubmitLoading] = useState(false);
-    const [imageLoading, setImageLoading] = useState(false);
-    const [uploaded, setUploaded] = useState(false);
-    //sate in data base
     const [title, setTitle] = useState("");
     const [desc, setDesc] = useState("");
     const [contactUsformTitle, setcontactUsformTitle] = useState("");
     const [contactUsformDesc, setcontactUsformDescA] = useState("");
-    const [contactUsformAvaili, setcontactUsformAvailiability] =
-      useState("");
+    const [contactUsformAvaili, setcontactUsformAvailiability] = useState("");
     const [contactUsformWhatsApp, setcontactUsformWhatsApp] = useState("");
     const [contactUsformCall, setcontactUsformCall] = useState("");
     const [contactUsformPrivacy, setcontactUsformPrivacy] = useState("");
-    const [privacy, setprivacy] = useState("");
-    const [contactUsformTerms, setcontactUsformTerms] = useState("");
-    const [youtubeLink, setyoutubeLink] = useState("");
-    const [image, setImage] = useState("");
-
-
 
     const payload = {
       title,
@@ -138,13 +99,7 @@ const Bartending = () => {
       contactUsformWhatsApp,
       contactUsformCall,
       contactUsformPrivacy,
-      privacy,
-      contactUsformTerms,
-      youtubeLink,
-      image,
     };
- 
-   
 
     const fromData = new FormData();
     fromData.append("title", title);
@@ -155,84 +110,13 @@ const Bartending = () => {
     fromData.append("contactUsformWhatApp", contactUsformWhatsApp);
     fromData.append("contactUsformCall", contactUsformCall);
     fromData.append("contactUsformPrivacy", contactUsformPrivacy);
-    fromData.append("privacy", privacy);
-    fromData.append("contactUsformTerms", contactUsformTerms);
-    fromData.append("youtubeLink", youtubeLink);
-    fromData.append("image", image);
-    fromData.append("type", "bartending");
 
-
-
-    //  console.log("payload", payload);
-    //    for (let key in payload) {
-    //      fromData.append(key, payload[key]);
-    //  }
-    // if (title) {
-    //   fromData.append("title", title);
-    // }
-    // if (desc) {
-    //   fromData.append("desc", desc);
-    // }
-    // if (academyDesc) {
-    //   fromData.append("academyDesc", academyDesc);
-    // }
-    // if (academyHeading) {
-    //   fromData.append("academyHeading", academyHeading);
-    // }
-    // if (academyTitle) {
-    //   fromData.append("academyTitle", academyTitle);
-    // }
-    // if (youtubeLink) {
-    //   fromData.append("youtubeLink", youtubeLink);
-    // }
-    // if (formTitle) {
-    //   fromData.append("formTitle", formTitle);
-    // }
-    // if (formDescA) {
-    //   fromData.append("formDesc", formDescA);
-    // }
-    // if (formPrivacy) {
-    //   fromData.append("formPrivacy", formPrivacy);
-    // }
-    // if (formImage) {
-    //   fromData.append("formImage", formImage);
-    // }
-    // if (formWhatApp) {
-    //   fromData.append("formWhatApp", formWhatApp);
-    // }
-    // if (formCall) {
-    //   fromData.append("formCall", formCall);
-    // }
-    // if (consultancyTitleFirst) {
-    //   fromData.append("consultancyTitle[0]", consultancyTitleFirst);
-    // }
-    // if (consultancyTitleSecond) {
-    //   fromData.append("consultancyTitle[1]", consultancyTitleSecond);
-    // }
-    // if (consultancyTitlethird) {
-    //   fromData.append("consultancyTitle[2]", consultancyTitlethird);
-    // }
-    // if (consultancyDescFirst) {
-    //   fromData.append("consultancyDesc[0]", consultancyDescFirst);
-    // }
-    // if (consultancyDescSecond) {
-    //   fromData.append("consultancyDesc[1]", consultancyDescSecond);
-    // }
-    // if (consultancyDescthird) {
-    //   fromData.append("consultancyDesc[2]", consultancyDescthird);
-    // }
-    // if (mainImage) {
-    //   mainImage.forEach((item) => {
-    //     fromData.append("image", item);
-    //   });
-    // }
-
-    //  console.log("typeof ",mainImage)
+    fromData.append("type", "contactus");
 
     const postHandler = async (e) => {
       e.preventDefault();
 
-      setSubmitLoading(true);
+    
       try {
         // console.log("formdata",fromData);
         const data = await axios.post(
@@ -256,12 +140,12 @@ const Bartending = () => {
         });
         fetchData();
         props.onHide();
-        setSubmitLoading(false);
+     
       } catch (e) {
         const msg = e.response.data.message;
         Store.addNotification({
           title: "",
-          message: msg,
+          message: "Contact us Form Added",
           type: "danger",
           insert: "bottom",
           container: "bottom-right",
@@ -272,7 +156,7 @@ const Bartending = () => {
             onScreen: true,
           },
         });
-        setSubmitLoading(false);
+      
       }
     };
 
@@ -289,28 +173,6 @@ const Bartending = () => {
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={postHandler}>
-            {imageLoading === true ? (
-              <Spinner animation="border" role="status" />
-            ) : (
-              ""
-            )}
-            {uploaded === true ? (
-              <Alert variant="success">Image Uploaded Successfully</Alert>
-            ) : (
-              ""
-            )}
-            <div className="multiple_Image">
-              <img src={editData?.image} alt="" />
-            </div>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Image</Form.Label>
-              <Form.Control
-                type="file"
-                onChange={(e) => setImage(e.target.files[0])}
-              />
-            </Form.Group>
-
             <Form.Group className="mb-3">
               <Form.Label>Title</Form.Label>
               <Form.Control
@@ -401,37 +263,6 @@ const Bartending = () => {
                 />
               </FloatingLabel>
             </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>privacy</Form.Label>
-              <FloatingLabel>
-                <Form.Control
-                  as="textarea"
-                  style={{ height: "100px" }}
-                  value={privacy}
-                  onChange={(e) => setprivacy(e.target.value)}
-                />
-              </FloatingLabel>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>contact Us form Terms</Form.Label>
-              <FloatingLabel>
-                <Form.Control
-                  as="textarea"
-                  style={{ height: "100px" }}
-                  value={contactUsformTerms}
-                  onChange={(e) => setcontactUsformTerms(e.target.value)}
-                />
-              </FloatingLabel>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>youtube Link</Form.Label>
-              <FloatingLabel>
-                <Form.Control
-                  type="text"
-                  onChange={(e) => setyoutubeLink(e.target.value)}
-                />
-              </FloatingLabel>
-            </Form.Group>
             <Button
               style={{
                 backgroundColor: "#0c0c0c",
@@ -440,11 +271,9 @@ const Bartending = () => {
               }}
               type="submit"
             >
-              {submitLoading ? (
-                <Spinner animation="border" role="status" />
-              ) : (
-                "Submit"
-              )}
+             
+                Submit
+             
             </Button>
           </Form>
         </Modal.Body>
@@ -489,7 +318,7 @@ const Bartending = () => {
             className="tracking-widest text-slate-900 font-semibold uppercase"
             style={{ fontSize: "20px" }}
           >
-            Bartending
+            Contact Us Form Data
           </span>
           <button
             onClick={() => {
@@ -499,7 +328,7 @@ const Bartending = () => {
             }}
             className="md:py-2 px-3 md:px-4 py-1 rounded-sm bg-[#0c0c0c] text-white tracking-wider"
           >
-          Edit
+            {data?.length === 0 ? "Create" : "Edit"}
           </button>
           <span className="flexCont">
             <i
@@ -514,20 +343,6 @@ const Bartending = () => {
         ) : (
           <>
             <div className="mt-4">
-              <div className="multiple_Image">
-                {data?.image && (
-                  <img
-                    src={data?.image}
-                    style={{
-                      width: "300px",
-                      maxWidth: "300px",
-                      height: "300px",
-                      maxHeight: "400px",
-                    }}
-                    alt=""
-                  />
-                )}
-              </div>
               <h4>{data.title}</h4>
               <p>{data.desc}</p>
               <h4>contact Us form Title</h4>
@@ -538,21 +353,6 @@ const Bartending = () => {
               <p>{data.contactUsformDesc}</p>
               <h4>contact Us form Privacy</h4>
               <p>{data.contactUsformPrivacy}</p>
-              <h4>privacy</h4>
-              <p>{data.privacy}</p>
-              <h4>contact Us form Terms</h4>
-              <p>{data.contactUsformTerms}</p>
-              <div style={{ width: "90%", margin: "40px auto" }}>
-                <iframe
-                  width="80%"
-                  height="400"
-                  src={data?.updateyoutubelink}
-                  title="YouTube video player"
-                  frameborder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowfullscreen
-                ></iframe>
-              </div>
               <div>
                 <div className="d-flex m-10">
                   <h4>contact for WhatsApp</h4>
@@ -577,4 +377,4 @@ const Bartending = () => {
   );
 };
 
-export default HOC(Bartending)
+export default HOC(ContactUsFormData);

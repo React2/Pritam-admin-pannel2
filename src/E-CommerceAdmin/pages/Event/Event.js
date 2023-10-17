@@ -158,10 +158,27 @@ const Event = () => {
     const putHandler = async (e) => {
       e.preventDefault();
       setSubmitLoading(true);
+      const updatePayload = {};
+      if (payload.image == "") {
+        //     title,
+        // desc,
+        // image: mainImage,
+        // type: "Event",
+        updatePayload["title"] = title;
+        updatePayload["desc"] = desc;
+        updatePayload["type"] = "Event";
+      } else {
+        updatePayload["title"] = title;
+        updatePayload["desc"] = desc;
+        updatePayload["image"] = mainImage;
+        updatePayload["type"] = "Event";
+      }
+
+      console.log("payload", updatePayload);
       try {
         const data = await axios.put(
           `${Baseurl}api/v1/admin/updateEvent/${id}`,
-          payload,
+          updatePayload,
           Auth
         );
         const msg = data.data.message;
